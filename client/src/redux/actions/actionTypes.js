@@ -1,0 +1,1 @@
+export const SHOW_RESULTS = 'SHOW_RESULTS';

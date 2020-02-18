@@ -6,7 +6,7 @@ import RegisterView from '../../views/register/RegisterView';
 import ProfileView from '../../views/profile/ProfileView';
 import HomeView from '../../views/home/HomeView';
 import UploadView from '../../views/upload/UploadView';
-
+import ResultsView from '../../views/results/ResultsView';
 
 class App extends React.Component {
   render() {
@@ -17,7 +17,7 @@ class App extends React.Component {
         <Route path='/register' component={RegisterView}></Route>
         <Route path='/profile' component={ProfileView}></Route>
         <Route path='/upload' component={UploadView}></Route>
-        <Route path='/results' component={UploadView}></Route>
+        <Route path='/results' component={ResultsView}></Route>
       </BrowserRouter>
     )
   }

@@ -32,6 +32,8 @@ export default function ButtonAppBar() {
             CSGO Analyzer
           </Typography>
 
+          <Button color="inherit" className={classes.menuButton} component={Link} to='/results'>Results</Button>
+
           <Button color="inherit" className={classes.menuButton} component={Link} to='/upload'>
             <Icon className={classes.menuButton} color='inherit'>add_circle</Icon>
             <span>Upload</span>
