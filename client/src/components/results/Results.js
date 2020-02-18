@@ -61,7 +61,7 @@ export default function Results() {
             <Paper elevation={3}>3</Paper>
           </Container>
 
-          <Container className>
+          <Container>
             <Tabs value={value} onChange={handleChange} centered>
               <Tab label='Scoreboard'></Tab>
               <Tab label='Rounds'></Tab>

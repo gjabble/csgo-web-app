@@ -27,9 +27,30 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function FileUpload(props) {
+export default function FileUpload() {
   const classes = useStyles();
   let history = useHistory();
+  const handleFileUpload = (e) => {
+    e.preventDefault();
+    document.querySelector('#spinner').style.display = 'block';
+    let formData = new FormData();
+    formData.append('file', document.querySelector('#fileupload').files[0]);
+    axios.post('file', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then((response) => {
+      document.querySelector('#spinner').style.display = 'none';
+
+
+
+      console.log(response.data);
+      history.push('/results');
+    }).catch((err) => {
+      console.log(err);
+      document.querySelector('#spinner').style.display = 'none';
+    });
+  }
   return (
     <React.Fragment>
       <CssBaseline />
@@ -40,24 +61,7 @@ export default function FileUpload(props) {
         <Typography variant="h5" align="center" color="textSecondary" component="p">
           Upload your CSGO replay file to be processed<br></br>Your file must be a .dem file
         </Typography>
-        <form onSubmit={(e) => {
-          document.querySelector('#spinner').style.display = 'block';
-          e.preventDefault();
-          let formData = new FormData();
-          formData.append('file', document.querySelector('#fileupload').files[0]);
-          axios.post('file', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }).then((response) => {
-            document.querySelector('#spinner').style.display = 'none';
-            history.push('/results');
-            console.log(response.data);
-          }).catch((err) => {
-            console.log(err);
-            document.querySelector('#spinner').style.display = 'none';
-          });
-        }}>
+        <form onSubmit={handleFileUpload}>
           <Grid align='center' className={classes.fileUpload}>
             <input
               onChange={function (e) {

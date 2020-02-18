@@ -19,10 +19,10 @@ export default function Scoreboard() {
     <Container className={classes.root}>
 
       <Typography className={classes.type}>Team 1 Scores</Typography>
-      <Table></Table>
+      <Table team="t"></Table>
 
       <Typography className={classes.type}>Team 2 Scores</Typography>
-      <Table></Table>
+      <Table team="ct"></Table>
 
     </Container>
   );
