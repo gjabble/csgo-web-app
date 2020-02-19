@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles({
   table: {
@@ -14,21 +14,21 @@ const useStyles = makeStyles({
   },
 });
 
-// dummy data
+const ResultsTable = (props) => {
+  let rows;
+  if (props.data) {
+    rows = props.data.filter((row) => row.team === props.team);
+    rows = rows.sort((a, b) => {
+      if (a.kills < b.kills) {
+        return 1;
+      } else if (a.kills > b.kills) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  }
 
-
-export default function SimpleTable(props) {
-  let rows = JSON.parse('{"scoreBoard":{"players":[{"name":"iPlayToLose","kills":6,"assists":5,"deaths":17,"team":"ct"},{"name":"Subzero8","kills":8,"assists":1,"deaths":15,"team":"ct"},{"name":"Fuji","kills":15,"assists":0,"deaths":17,"team":"ct"},{"name":"Byakuya","kills":8,"assists":2,"deaths":15,"team":"ct"},{"name":"}?One shot = ONe kill ? {","kills":6,"assists":2,"deaths":15,"team":"ct"},{"name":"♔ kuZi ♔","kills":13,"assists":1,"deaths":12,"team":"t"},{"name":"Laika_Boss","kills":13,"assists":2,"deaths":5,"team":"t"},{"name":"Kahve * -* ","kills":11,"assists":4,"deaths":11,"team":"t"},{"name":"✪EKMEK ARASI TOST✪","kills":21,"assists":1,"deaths":7,"team":"t"},{"name":"Саша лох","kills":19,"assists":4,"deaths":8,"team":"t"},{"name":"Elliot","kills":0,"assists":1,"deaths":2,"team":"ct"}]}}');
-  rows = rows.scoreBoard.players.filter((row) => row.team === props.team);
-  rows = rows.sort((a, b) => {
-    if (a.kills < b.kills) {
-      return 1;
-    } else if (a.kills > b.kills) {
-      return -1;
-    } else {
-      return 0;
-    }
-  })
   const classes = useStyles();
 
   return (
@@ -44,7 +44,7 @@ export default function SimpleTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
+          {rows ? (rows.map(row => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
                 {row.name}
@@ -54,9 +54,20 @@ export default function SimpleTable(props) {
               <TableCell align="right">{row.deaths}</TableCell>
               <TableCell align="right">{row.team}</TableCell>
             </TableRow>
-          ))}
+          ))) : (<TableRow></TableRow>)}
         </TableBody>
       </Table>
     </TableContainer>
   );
 }
+
+function mapStateToProps(state) {
+  if (state.scoreBoard) {
+    return {
+      data: state.scoreBoard.players
+    }
+  }
+  return {};
+}
+
+export default connect(mapStateToProps)(ResultsTable);

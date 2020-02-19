@@ -8,6 +8,8 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
+import showResults from '../../redux/actions';
 
 const useStyles = makeStyles(theme => ({
   heroContent: {
@@ -27,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function FileUpload() {
+const FileUpload = ({ dispatch }) => {
   const classes = useStyles();
   let history = useHistory();
   const handleFileUpload = (e) => {
@@ -41,9 +43,7 @@ export default function FileUpload() {
       }
     }).then((response) => {
       document.querySelector('#spinner').style.display = 'none';
-
-
-
+      dispatch(showResults(response.data));
       console.log(response.data);
       history.push('/results');
     }).catch((err) => {
@@ -92,3 +92,5 @@ export default function FileUpload() {
     </React.Fragment>
   );
 }
+
+export default connect()(FileUpload);
