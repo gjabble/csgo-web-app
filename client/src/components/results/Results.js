@@ -6,7 +6,9 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import Scoreboard from '../scoreboard/Scoreboard'
+import Scoreboard from '../scoreboard/Scoreboard';
+import { connect } from 'react-redux';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -43,7 +45,14 @@ function TabPanel(props) {
   );
 }
 
-export default function Results() {
+const Results = (props) => {
+  console.log(props.data);
+  let result = '';
+  if (props.data.winner) {
+    result = 'Victory';
+  } else {
+    result = 'Defeat';
+  }
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -56,9 +65,14 @@ export default function Results() {
       <Paper elevation={3}>
         <Container>
           <Container className={classes.topContainer}>
-            <Paper elevation={3}>16</Paper>
-            <Paper elevation={3}>Dust 2 iPlayToLose Win 45:33</Paper>
-            <Paper elevation={3}>3</Paper>
+            <Paper elevation={3}>{props.data.ctScore}</Paper>
+            <Paper elevation={3}>
+              <Typography>{result}</Typography>
+              <Typography>{props.data.playerName}</Typography>
+              <Typography>{props.data.map}</Typography>
+              <Typography>{props.data.gameLength}</Typography>
+            </Paper>
+            <Paper elevation={3}>{props.data.tScore}</Paper>
           </Container>
 
           <Container>
@@ -71,7 +85,15 @@ export default function Results() {
             <TabPanel value={value} index={0}>
               <Scoreboard></Scoreboard>
             </TabPanel>
-            <TabPanel value={value} index={1}>rounds</TabPanel>
+            <TabPanel value={value} index={1}>
+              {/* for each round need to show
+                  result of round
+                  amount spent
+                  utility damage
+                  purchase summary
+                  impact (damage/amount_spent)
+                  accuracy */}
+            </TabPanel>
             <TabPanel value={value} index={2}>economy</TabPanel>
             <TabPanel value={value} index={3}>accuracy</TabPanel>
           </Container>
@@ -80,3 +102,14 @@ export default function Results() {
     </Container>
   )
 }
+
+function mapStateToProps(state) {
+  if (Object.entries(state).length === 0) {
+    return {};
+  }
+  return {
+    data: state
+  }
+}
+
+export default connect(mapStateToProps)(Results);

@@ -37,14 +37,15 @@ const FileUpload = ({ dispatch }) => {
     document.querySelector('#spinner').style.display = 'block';
     let formData = new FormData();
     formData.append('file', document.querySelector('#fileupload').files[0]);
+    formData.append('playerName', 'Rainy Days');
     axios.post('file', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }).then((response) => {
+      console.log(response.data);
       document.querySelector('#spinner').style.display = 'none';
       dispatch(showResults(response.data));
-      console.log(response.data);
       history.push('/results');
     }).catch((err) => {
       console.log(err);
