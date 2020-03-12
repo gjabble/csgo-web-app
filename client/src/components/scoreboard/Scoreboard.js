@@ -18,10 +18,10 @@ export default function Scoreboard() {
   return (
     <Container className={classes.root}>
 
-      <Typography className={classes.type}>Team 1 Scores</Typography>
+      <Typography className={classes.type}>Terrorists</Typography>
       <Table team="t"></Table>
 
-      <Typography className={classes.type}>Team 2 Scores</Typography>
+      <Typography className={classes.type}>Counter Terrorists</Typography>
       <Table team="ct"></Table>
 
     </Container>

@@ -6,7 +6,7 @@ const fs = require('fs');
 const cors = require('cors');
 const formidableMiddleware = require('express-formidable');
 const bodyParser = require('body-parser');
-var util = require('util')
+
 app.use(cors({
   origin: '*',
   optionsSuccessStatus: 200,
@@ -27,7 +27,7 @@ app.post('/file', (req, res) => {
     }
     const demo = new demofile.DemoFile();
     // const playerName = req.fields.playerName;
-    const playerName = 'Rainy';
+    const playerName = 'iPlayToLose';
 
     let overview = {
       scoreBoard: {

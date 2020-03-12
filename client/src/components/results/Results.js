@@ -8,8 +8,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Scoreboard from '../scoreboard/Scoreboard';
 import { connect } from 'react-redux';
-
-
+import Rounds from '../rounds/Rounds';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,12 +45,13 @@ function TabPanel(props) {
 }
 
 const Results = (props) => {
-  console.log(props.data);
   let result = '';
   if (props.data.winner) {
     result = 'Victory';
+  } else if (props.data.tscore === props.data.ctScore) {
+    result = 'Draw';
   } else {
-    result = 'Defeat';
+    result = 'Defeat'
   }
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -65,14 +65,20 @@ const Results = (props) => {
       <Paper elevation={3}>
         <Container>
           <Container className={classes.topContainer}>
-            <Paper elevation={3}>{props.data.ctScore}</Paper>
+            <Paper elevation={3}>
+              <Typography>Counter Terrorists</Typography>
+              {props.data.ctScore}
+            </Paper>
             <Paper elevation={3}>
               <Typography>{result}</Typography>
               <Typography>{props.data.playerName}</Typography>
               <Typography>{props.data.map}</Typography>
               <Typography>{props.data.gameLength}</Typography>
             </Paper>
-            <Paper elevation={3}>{props.data.tScore}</Paper>
+            <Paper elevation={3}>
+              <Typography>Terrorists</Typography>
+              {props.data.tScore}
+            </Paper>
           </Container>
 
           <Container>
@@ -86,13 +92,7 @@ const Results = (props) => {
               <Scoreboard></Scoreboard>
             </TabPanel>
             <TabPanel value={value} index={1}>
-              {/* for each round need to show
-                  result of round
-                  amount spent
-                  utility damage
-                  purchase summary
-                  impact (damage/amount_spent)
-                  accuracy */}
+              <Rounds></Rounds>
             </TabPanel>
             <TabPanel value={value} index={2}>economy</TabPanel>
             <TabPanel value={value} index={3}>accuracy</TabPanel>
