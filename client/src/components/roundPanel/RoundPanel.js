@@ -6,7 +6,6 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,28 +24,6 @@ const useStyles = makeStyles(theme => ({
 
 const RoundPanel = (props) => {
   const classes = useStyles();
-  {/* for each round need to show
-                  result of round
-                  amount spent
-                  utility damage
-                  purchase summary
-                  impact (damage/amount_spent)
-                  accuracy */}
-  // roundNumber 1 - done
-  // winner true - done
-  // reason cts_killed - done
-  // timeAlive 33 - done
-
-  // amountSpent 0
-  // hasHelmet false
-  // assists 1
-  // damage 44
-  // equipmentValue 200
-  // headshotKills 0
-  // killReward 0
-  // kills 0
-  // moneySaved 800
-  // objectives 0
   let result = props.data.winner ? 'Victory' : 'Defeat';
   let timeAlive = props.data.timeAlive == 0 ? 'Entire Round' : `${props.data.timeAlive}s`;
   return (
@@ -58,8 +35,8 @@ const RoundPanel = (props) => {
           <Typography>Time Alive: {timeAlive}</Typography>
         </Paper>
       </Container >
-      <TableContainer>
-        <Table className={classes.table} aria-label="simple table">
+      <TableContainer >
+        <Table aria-label="simple table">
           <TableBody>
             <TableRow>
               <TableCell align="center">Impact</TableCell>

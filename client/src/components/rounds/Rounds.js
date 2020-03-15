@@ -7,10 +7,26 @@ import Container from '@material-ui/core/Container';
 import Typography from "@material-ui/core/Typography";
 import Box from '@material-ui/core/Box';
 import RoundPanel from '../roundPanel/RoundPanel';
+import OverviewRoundPanel from '../overviewRoundPanel/OverviewRoundPanel';
 
-
-const useStyles = makeStyles({
-});
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    textAlign: 'center'
+  },
+  topContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    textAlign: 'center',
+    '& > *': {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(12),
+    },
+  },
+}))
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -29,6 +45,7 @@ function TabPanel(props) {
 }
 
 const Rounds = (props) => {
+  const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -45,7 +62,7 @@ const Rounds = (props) => {
   });
 
   return (
-    <Container>
+    <Container className={classes.root}>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -55,13 +72,16 @@ const Rounds = (props) => {
         scrollButtons="auto"
         aria-label="scrollable auto tabs example"
         cenetered>
+        <Tab label='Overview'></Tab>
         {rounds ? (rounds.map(round => (
-          <Tab label={`Round ${round.roundNumber}`}>
-          </Tab>
+          <Tab label={`Round ${round.roundNumber}`}></Tab>
         ))) : (<div></div>)}
       </Tabs>
+      <TabPanel value={value} index={0}>
+        <OverviewRoundPanel data={rounds}></OverviewRoundPanel>
+      </TabPanel>
       {rounds ? (rounds.map(round => (
-        <TabPanel value={value} index={round.roundNumber - 1}>
+        <TabPanel value={value} index={round.roundNumber}>
           <RoundPanel data={round}></RoundPanel>
         </TabPanel>
       ))) : (<div></div>)}

@@ -16,6 +16,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/file', (req, res) => {
   fs.readFile(req.files.file.path, (err, buffer) => {
+    let hitgroups = {
+      1: 'head',
+      2: 'chest',
+      3: 'stomach',
+      4: 'left_arm',
+      5: 'right_arm',
+      6: 'left_leg',
+      7: 'right_leg',
+    }
     let reasons = {
       1: 'target_bombed', // t win
       7: 'bomb_defused', // ct win
@@ -27,17 +36,97 @@ app.post('/file', (req, res) => {
     }
     const demo = new demofile.DemoFile();
     // const playerName = req.fields.playerName;
-    const playerName = 'iPlayToLose';
+    const playerName = 'Rainy';
 
     let overview = {
       scoreBoard: {
         players: []
       },
-      rounds: []
+      rounds: [],
+      weapons: {}
     }
+
 
     demo.on('start', () => {
       overview.map = demo.header.mapName;
+    });
+
+    demo.gameEvents.on('player_death', (e) => {
+      const attacker = demo.entities.getByUserId(e.attacker);
+      const attackerName = attacker ? attacker.name : "unnamed";
+      if (attackerName === playerName) {
+        if (!overview.weapons[e.weapon]) {
+          overview.weapons[e.weapon] = {
+            kills: 1,
+            headshots: 0,
+            damage: 0,
+            numberFired: 0,
+            numberHit: 0,
+            accuracy: 0
+          }
+        } else {
+          let prevKills = overview.weapons[e.weapon].kills;
+          overview.weapons[e.weapon].kills = prevKills + 1;
+          if (e.headshot) {
+            let prevHeadshots = overview.weapons[e.weapon].headshots;
+            overview.weapons[e.weapon].headshots = prevHeadshots + 1;
+          }
+        }
+      }
+    });
+
+    demo.gameEvents.on('player_hurt', (e) => {
+      const attacker = demo.entities.getByUserId(e.attacker);
+      const attackerName = attacker ? attacker.name : "unnamed";
+
+      if (attackerName === playerName) {
+        if (!overview.weapons[e.weapon]) {
+          overview.weapons[e.weapon] = {
+            kills: 0,
+            headshots: 0,
+            damage: e['dmg_health'],
+            numberFired: 0,
+            numberHit: 1,
+            accuracy: 0
+          }
+        } else {
+          let prevDamage = overview.weapons[e.weapon].damage;
+          overview.weapons[e.weapon].damage = prevDamage + e['dmg_health'];
+
+          let prevHits = overview.weapons[e.weapon].numberHit;
+          overview.weapons[e.weapon].numberHit = prevHits + 1;
+
+          let numberFired = overview.weapons[e.weapon].numberFired;
+          let numberHit = overview.weapons[e.weapon].numberHit;
+          overview.weapons[e.weapon].accuracy = (numberHit / numberFired) * 100;
+        }
+      }
+    });
+
+    demo.gameEvents.on('weapon_fire', (e) => {
+      const attacker = demo.entities.getByUserId(e.userid);
+      const attackerName = attacker ? attacker.name : "unnamed";
+      e.weapon = e.weapon.slice(7, e.weapon.length);
+      if (attackerName === playerName) {
+        if (!overview.weapons[e.weapon]) {
+          overview.weapons[e.weapon] = {
+            kills: 0,
+            headshots: 0,
+            damage: 0,
+            numberFired: 1,
+            numberHit: 0,
+            accuracy: 0
+          }
+        } else {
+          let prevFired = overview.weapons[e.weapon].numberFired;
+          overview.weapons[e.weapon].numberFired = prevFired + 1;
+
+          let numberFired = overview.weapons[e.weapon].numberFired;
+          let numberHit = overview.weapons[e.weapon].numberHit;
+          overview.weapons[e.weapon].accuracy = (numberHit / numberFired) * 100;
+        }
+
+      }
     });
 
     demo.gameEvents.on('round_end', (e) => {
@@ -46,7 +135,6 @@ app.post('/file', (req, res) => {
       let roundNumber = demo.gameRules.roundsPlayed;
       if (roundNumber > 30) return;
       let player = demo.players.find((p) => p.name === playerName);
-
 
       for (const p of teamT.members) {
         if (p.isFakePlayer) {
@@ -117,6 +205,8 @@ app.post('/file', (req, res) => {
     });
 
 
+
+
     demo.on('end', () => {
       let seconds = demo.currentTime;
       const secondsToMinutes = Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
@@ -132,6 +222,7 @@ app.post('/file', (req, res) => {
       overview.playerTeam = player.teamNumber;
       res.send(overview);
     });
+
     demo.parse(buffer);
   });
 });

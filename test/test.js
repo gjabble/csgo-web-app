@@ -87,10 +87,11 @@ function parseRounds() {
     demoFile.on('end', () => {
       let fileName = demoPath.substring(0, demoPath.length - 4) + '-rounds.json';
       let dir = fileName.split('-', 3).join('-');
-      fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
-        if (err) throw err;
-        console.log(fileName + ' has been saved.');
-      });
+      console.log(JSON.stringify(json));
+      // fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
+      //   if (err) throw err;
+      //   console.log(fileName + ' has been saved.');
+      // });
     });
 
     demoFile.parse(buffer);
@@ -187,14 +188,14 @@ function parseScoreboard() {
     let demoFile = new demofile.DemoFile();
 
     demoFile.gameEvents.on('round_announce_match_start', () => {
-      let teamT = demoFile.teams[demofile.TEAM_TERRORISTS];
-      let teamCT = demoFile.teams[demofile.TEAM_CTS];
+      let teamT = demoFile.teams[2];
+      let teamCT = demoFile.teams[3];
       json['0'] = {};
       json['0']['terrorists'] = {};
       // json['0']['terrorists']['teamName'] = teamT.clanName;
       json['0']['terrorists']['score'] = 0;
       json['0']['terrorists']['players'] = [];
-      for (p of teamT.members) {
+      for (const p of teamT.members) {
         json['0']['terrorists']['players'].push({
           'name': p.name,
           'account': 800,
@@ -261,10 +262,11 @@ function parseScoreboard() {
     demoFile.on('end', () => {
       let fileName = demoPath.substring(0, demoPath.length - 4) + '-scores.json';
       let dir = fileName.split('-', 3).join('-');
-      fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
-        if (err) throw err;
-        console.log(fileName + ' has been saved.');
-      });
+      console.log(JSON.stringify(json));
+      // fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
+      //   if (err) throw err;
+      //   console.log(fileName + ' has been saved.');
+      // });
     });
 
     demoFile.parse(buffer);
@@ -376,10 +378,11 @@ function parseMoney() {
     demoFile.on('end', () => {
       let fileName = demoPath.substring(0, demoPath.length - 4) + '-money.json';
       let dir = fileName.split('-', 3).join('-');
-      fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
-        if (err) throw err;
-        console.log(fileName + ' has been saved.');
-      });
+      console.log(JSON.stringify(json));
+      // fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
+      //   if (err) throw err;
+      //   console.log(fileName + ' has been saved.');
+      // });
     });
 
     demoFile.parse(buffer);
@@ -426,13 +429,13 @@ function parseDamage() {
     let totalDamages = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     demoFile.gameEvents.on('round_announce_match_start', () => {
-      teamT = demoFile.teams[demofile.TEAM_TERRORISTS];
-      teamCT = demoFile.teams[demofile.TEAM_CTS];
+      teamT = demoFile.teams[2];
+      teamCT = demoFile.teams[3];
       json['0'] = {};
       json['0']['terrorists'] = {};
       // json['0']['terrorists']['teamName'] = teamT.clanName;
       json['0']['terrorists']['players'] = [];
-      for (p of teamT.members) {
+      for (const p of teamT.members) {
         json['0']['terrorists']['players'].push({
           'name': p.name,
           'damage': 0,
@@ -487,10 +490,11 @@ function parseDamage() {
     demoFile.on('end', () => {
       let fileName = demoPath.substring(0, demoPath.length - 4) + '-damage.json';
       let dir = fileName.split('-', 3).join('-');
-      fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
-        if (err) throw err;
-        console.log(fileName + ' has been saved.');
-      });
+      console.log(JSON.stringify(json));
+      // fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
+      //   if (err) throw err;
+      //   console.log(fileName + ' has been saved.');
+      // });
     });
 
     demoFile.parse(buffer);
@@ -580,10 +584,11 @@ function parseEconomy() {
     demoFile.on('end', () => {
       let fileName = demoPath.substring(0, demoPath.length - 4) + '-economy.json';
       let dir = fileName.split('-', 3).join('-');
-      fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
-        if (err) throw err;
-        console.log(fileName + ' has been saved.');
-      });
+      console.log(JSON.stringify(json));
+      // fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
+      //   if (err) throw err;
+      //   console.log(fileName + ' has been saved.');
+      // });
     });
 
     demoFile.parse(buffer);
@@ -773,10 +778,11 @@ function parseMap() {
     demoFile.on('end', () => {
       let fileName = demoPath.substring(0, demoPath.length - 4) + '-map.json';
       let dir = fileName.split('-', 3).join('-');
-      fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
-        if (err) throw err;
-        console.log(fileName + ' has been saved.');
-      });
+      console.log(JSON.stringify(json));
+      // fs.writeFile('json/' + dir + '/' + fileName, JSON.stringify(json, null, 2), (err) => {
+      //   if (err) throw err;
+      //   console.log(fileName + ' has been saved.');
+      // });
     });
 
     demoFile.parse(buffer);
