@@ -48,7 +48,7 @@ const Results = (props) => {
   let result = '';
   if (props.data.winner) {
     result = 'Victory';
-  } else if (props.data.tscore === props.data.ctScore) {
+  } else if (props.data.tScore === props.data.ctScore) {
     result = 'Draw';
   } else {
     result = 'Defeat'

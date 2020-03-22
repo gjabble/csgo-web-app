@@ -50,7 +50,7 @@ const Rounds = (props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
-  let rounds = props.data;
+  let rounds = props.data.rounds;
   rounds = rounds.sort((a, b) => {
     if (a.roundNumber < b.roundNumber) {
       return -1;
@@ -78,7 +78,7 @@ const Rounds = (props) => {
         ))) : (<div></div>)}
       </Tabs>
       <TabPanel value={value} index={0}>
-        <OverviewRoundPanel data={rounds}></OverviewRoundPanel>
+        <OverviewRoundPanel data={props.data}></OverviewRoundPanel>
       </TabPanel>
       {rounds ? (rounds.map(round => (
         <TabPanel value={value} index={round.roundNumber}>
@@ -89,9 +89,12 @@ const Rounds = (props) => {
 }
 
 function mapStateToProps(state) {
-  if (state.rounds) {
+  if (state.rounds && state.weapons) {
     return {
-      data: state.rounds
+      data: {
+        rounds: state.rounds,
+        weapons: state.weapons,
+      }
     }
   }
   return {};

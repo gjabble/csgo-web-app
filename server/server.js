@@ -36,7 +36,7 @@ app.post('/file', (req, res) => {
     }
     const demo = new demofile.DemoFile();
     // const playerName = req.fields.playerName;
-    const playerName = 'Rainy';
+    const playerName = 'iPlayToLose';
 
     let overview = {
       scoreBoard: {
@@ -220,6 +220,7 @@ app.post('/file', (req, res) => {
       let winner = player == winningTeam ? true : false;
       overview.winner = winner;
       overview.playerTeam = player.teamNumber;
+      console.log(JSON.stringify(overview));
       res.send(overview);
     });
 
