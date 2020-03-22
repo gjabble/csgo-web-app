@@ -709,6 +709,18 @@
       "accuracy": 15.789473684210526
     }
   },
+  "performance": {
+    "totalFired": 885,
+    "totalHits": 119,
+    "headshotHits": 15,
+    "totalDamage": 3994,
+    "averageDamage": 133.13333333333333,
+    "averageHeadshot": 0.5,
+    "averageKills": 1.2666666666666666,
+    "averageAssists": 0.3,
+    "averageDeaths": 0.7666666666666667,
+    "overallAccuracy": 13.446327683615818
+  },
   "map": "de_mirage",
   "gameLength": "54:06",
   "tScore": 15,

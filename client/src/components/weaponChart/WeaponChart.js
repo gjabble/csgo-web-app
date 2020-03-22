@@ -35,7 +35,6 @@ const WeaponChart = (props) => {
     i++;
   });
   weapons.sort((a, b) => b.kills - a.kills);
-  console.log(weapons);
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {

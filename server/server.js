@@ -36,14 +36,15 @@ app.post('/file', (req, res) => {
     }
     const demo = new demofile.DemoFile();
     // const playerName = req.fields.playerName;
-    const playerName = 'iPlayToLose';
+    const playerName = 'Rainy Days';
 
     let overview = {
       scoreBoard: {
         players: []
       },
       rounds: [],
-      weapons: {}
+      weapons: {},
+      performance: {}
     }
 
 
@@ -78,8 +79,23 @@ app.post('/file', (req, res) => {
     demo.gameEvents.on('player_hurt', (e) => {
       const attacker = demo.entities.getByUserId(e.attacker);
       const attackerName = attacker ? attacker.name : "unnamed";
-
       if (attackerName === playerName) {
+        if (e.hitgroup == 1) {
+          if (!overview.performance.headshotHits) {
+            overview.performance.headshotHits = 1;
+          } else {
+            const prevVal = overview.performance.headshotHits;
+            overview.performance.headshotHits = prevVal + 1;
+          }
+        }
+
+        if (!overview.performance.totalHits) {
+          overview.performance.totalHits = 1
+        } else {
+          const prevVal = overview.performance.totalHits;
+          overview.performance.totalHits = prevVal + 1;
+        }
+
         if (!overview.weapons[e.weapon]) {
           overview.weapons[e.weapon] = {
             kills: 0,
@@ -108,6 +124,12 @@ app.post('/file', (req, res) => {
       const attackerName = attacker ? attacker.name : "unnamed";
       e.weapon = e.weapon.slice(7, e.weapon.length);
       if (attackerName === playerName) {
+        if (!overview.performance.totalFired) {
+          overview.performance.totalFired = 1;
+        } else {
+          const prevVal = overview.performance.totalFired;
+          overview.performance.totalFired = prevVal + 1;
+        }
         if (!overview.weapons[e.weapon]) {
           overview.weapons[e.weapon] = {
             kills: 0,
@@ -137,6 +159,7 @@ app.post('/file', (req, res) => {
       let player = demo.players.find((p) => p.name === playerName);
 
       for (const p of teamT.members) {
+        console.log(p.name);
         if (p.isFakePlayer) {
           continue;
         }
@@ -161,6 +184,7 @@ app.post('/file', (req, res) => {
         }
       }
       for (const p of teamCT.members) {
+        console.log(p.name);
         if (p.isFakePlayer) {
           continue;
         }
@@ -220,6 +244,16 @@ app.post('/file', (req, res) => {
       let winner = player == winningTeam ? true : false;
       overview.winner = winner;
       overview.playerTeam = player.teamNumber;
+      const totalDamage = overview.rounds.map(round => round.damage).reduce((acc, cv) => acc + cv);
+      const playerStats = overview.scoreBoard.players.find(player => player.name == playerName);
+      const numRounds = overview.rounds.length;
+      overview.performance.totalDamage = totalDamage;
+      overview.performance.averageDamage = totalDamage / numRounds;
+      overview.performance.averageHeadshot = overview.performance.headshotHits / numRounds;
+      overview.performance.averageKills = playerStats.kills / numRounds;
+      overview.performance.averageAssists = playerStats.assists / numRounds;
+      overview.performance.averageDeaths = playerStats.deaths / numRounds;
+      overview.performance.overallAccuracy = (overview.performance.totalHits / overview.performance.totalFired) * 100;
       console.log(JSON.stringify(overview));
       res.send(overview);
     });
