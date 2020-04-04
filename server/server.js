@@ -76,20 +76,6 @@ app.post('/file', (req, res) => {
       }
     });
 
-    demo.gameEvents.on('round_start', (e) => {
-      // let player = demo.players.find((p) => p.name === playerName);
-      // let roundNumber = demo.gameRules.roundsPlayed;
-      // let index = 0;
-      // let round = overview.rounds.find((round, i) => {
-      //   index = i;
-      //   return round.roundNumber === roundNumber
-      // });
-      // if (round) {
-      //   round.weapons = player.weapons.map(weapon => weapon.itemName);
-      //   overview.rounds[index] = round
-      // }
-    })
-
     demo.gameEvents.on('player_hurt', (e) => {
       const attacker = demo.entities.getByUserId(e.attacker);
       const attackerName = attacker ? attacker.name : "unnamed";
@@ -223,10 +209,10 @@ app.post('/file', (req, res) => {
       let winner = player.teamNumber === e.winner;
       let matchStats = player.matchStats[roundNumber - 1];
       overview.rounds.push({
-        'roundNumber': demo.gameRules.roundsPlayed,
+        'roundNumber': roundNumber,
         'winner': winner,
         'reason': reasons[e.reason],
-        'amountSpent': player.cashSpendThisRound,
+        'amountSpent': matchStats.equipmentValue - player.roundStartEquipmentValue,
         'hasHelmet': player.hasHelmet,
         'assists': matchStats.assists,
         'damage': matchStats.damage,

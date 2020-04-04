@@ -3,6 +3,7 @@ import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Typography from "@material-ui/core/Typography";
 import { connect } from 'react-redux';
+import MoneyChart from '../moneychart/MoneyChart';
 
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
@@ -19,6 +20,7 @@ const Economy = (props) => {
        * force buy, eco, full buy per round - state.rounds
        * stats for average spend per round, average save per round - state.rounds
        */}
+      <MoneyChart data={props.data}></MoneyChart>
     </Container>
   );
 }
@@ -26,7 +28,7 @@ const Economy = (props) => {
 function mapStateToProps(state) {
   if (state) {
     return {
-      data: state
+      data: state.rounds
     }
   }
   return {};
