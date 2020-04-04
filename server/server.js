@@ -36,7 +36,7 @@ app.post('/file', (req, res) => {
     }
     const demo = new demofile.DemoFile();
     // const playerName = req.fields.playerName;
-    const playerName = 'Rainy Days';
+    const playerName = 'Rainy';
 
     let overview = {
       scoreBoard: {
@@ -44,7 +44,7 @@ app.post('/file', (req, res) => {
       },
       rounds: [],
       weapons: {},
-      performance: {}
+      performance: {},
     }
 
 
@@ -75,6 +75,20 @@ app.post('/file', (req, res) => {
         }
       }
     });
+
+    demo.gameEvents.on('round_start', (e) => {
+      // let player = demo.players.find((p) => p.name === playerName);
+      // let roundNumber = demo.gameRules.roundsPlayed;
+      // let index = 0;
+      // let round = overview.rounds.find((round, i) => {
+      //   index = i;
+      //   return round.roundNumber === roundNumber
+      // });
+      // if (round) {
+      //   round.weapons = player.weapons.map(weapon => weapon.itemName);
+      //   overview.rounds[index] = round
+      // }
+    })
 
     demo.gameEvents.on('player_hurt', (e) => {
       const attacker = demo.entities.getByUserId(e.attacker);
@@ -159,7 +173,6 @@ app.post('/file', (req, res) => {
       let player = demo.players.find((p) => p.name === playerName);
 
       for (const p of teamT.members) {
-        console.log(p.name);
         if (p.isFakePlayer) {
           continue;
         }
@@ -184,7 +197,6 @@ app.post('/file', (req, res) => {
         }
       }
       for (const p of teamCT.members) {
-        console.log(p.name);
         if (p.isFakePlayer) {
           continue;
         }
@@ -254,7 +266,7 @@ app.post('/file', (req, res) => {
       overview.performance.averageAssists = playerStats.assists / numRounds;
       overview.performance.averageDeaths = playerStats.deaths / numRounds;
       overview.performance.overallAccuracy = (overview.performance.totalHits / overview.performance.totalFired) * 100;
-      console.log(JSON.stringify(overview));
+      // console.log(JSON.stringify(overview));
       res.send(overview);
     });
 
