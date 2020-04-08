@@ -6,13 +6,31 @@ const fs = require('fs');
 const cors = require('cors');
 const formidableMiddleware = require('express-formidable');
 const bodyParser = require('body-parser');
+const mongoose = require("mongoose");
+const passport = require("passport");
+const users = require("./routes/api/users");
 
 app.use(cors({
   origin: '*',
   optionsSuccessStatus: 200,
 }));
-app.use(formidableMiddleware());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+const db = require("./config/keys").mongoURI;
+
+mongoose
+  .connect(
+    db,
+    { useNewUrlParser: true }
+  )
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
+
+
+app.use(passport.initialize());
+require("./config/passport")(passport);
+app.use("/api/users", users);
+app.use(formidableMiddleware());
 
 app.post('/file', (req, res) => {
   fs.readFile(req.files.file.path, (err, buffer) => {
