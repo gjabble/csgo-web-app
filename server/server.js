@@ -20,10 +20,10 @@ app.post('/file', (req, res) => {
       1: 'head',
       2: 'chest',
       3: 'stomach',
-      4: 'left_arm',
-      5: 'right_arm',
-      6: 'left_leg',
-      7: 'right_leg',
+      4: 'leftarm',
+      5: 'rightarm',
+      6: 'leftleg',
+      7: 'rightleg',
     }
     let reasons = {
       1: 'target_bombed', // t win
@@ -45,6 +45,7 @@ app.post('/file', (req, res) => {
       rounds: [],
       weapons: {},
       performance: {},
+      accuracy: {}
     }
 
 
@@ -80,6 +81,24 @@ app.post('/file', (req, res) => {
       const attacker = demo.entities.getByUserId(e.attacker);
       const attackerName = attacker ? attacker.name : "unnamed";
       if (attackerName === playerName) {
+        if (!overview.accuracy[e.weapon]) {
+          overview.accuracy[e.weapon] = {
+            head: 0,
+            chest: 0,
+            stomach: 0,
+            leftarm: 0,
+            rightarm: 0,
+            leftleg: 0,
+            rightleg: 0
+          };
+          overview.accuracy[e.weapon][hitgroups[e.hitgroup]] = 1;
+        } else {
+          let prev = overview.accuracy[e.weapon][hitgroups[e.hitgroup]];
+          overview.accuracy[e.weapon][hitgroups[e.hitgroup]] = prev + 1;
+        }
+
+
+
         if (e.hitgroup == 1) {
           if (!overview.performance.headshotHits) {
             overview.performance.headshotHits = 1;
@@ -212,7 +231,7 @@ app.post('/file', (req, res) => {
         'roundNumber': roundNumber,
         'winner': winner,
         'reason': reasons[e.reason],
-        'amountSpent': matchStats.equipmentValue - player.roundStartEquipmentValue,
+        'amountSpent': player.cashSpendThisRound,
         'hasHelmet': player.hasHelmet,
         'assists': matchStats.assists,
         'damage': matchStats.damage,
@@ -225,9 +244,6 @@ app.post('/file', (req, res) => {
         'objectives': matchStats.objective
       });
     });
-
-
-
 
     demo.on('end', () => {
       let seconds = demo.currentTime;
@@ -252,7 +268,7 @@ app.post('/file', (req, res) => {
       overview.performance.averageAssists = playerStats.assists / numRounds;
       overview.performance.averageDeaths = playerStats.deaths / numRounds;
       overview.performance.overallAccuracy = (overview.performance.totalHits / overview.performance.totalFired) * 100;
-      // console.log(JSON.stringify(overview));
+      console.log(JSON.stringify(overview));
       res.send(overview);
     });
 
