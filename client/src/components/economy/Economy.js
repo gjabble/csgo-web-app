@@ -1,15 +1,16 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import Typography from "@material-ui/core/Typography";
-import WeaponChart from '../weaponChart/WeaponChart';
-import RoundResultChart from '../roundResultChart/RoundResultChart';
-import PerformanceChart from '../performanceChart/PerformanceChart';
+import { connect } from 'react-redux';
+import MoneyChart from '../moneychart/MoneyChart';
+import RoundTypeChart from '../roundtypechart/RoundTypeChart';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import Typography from "@material-ui/core/Typography";
+import EconomyPerformanceChart from '../economyPerformanceChart/EconomyPerformanceChart';
 import { makeStyles } from '@material-ui/core/styles';
+
 const useStyles = makeStyles((theme) => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -22,50 +23,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OverviewRoundPanel = (props) => {
+const Economy = (props) => {
   const [expanded, setExpanded] = React.useState('panel1');
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-
   const classes = useStyles();
-
   return (
     <Container>
-
       <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Round Win/Loss Summary</Typography>
-          <Typography className={classes.secondaryHeading}>Find out your team's round wins and losses this game</Typography>
+          <Typography className={classes.heading}>Economy Graph</Typography>
+          <Typography className={classes.secondaryHeading}>Find out your expenditure breakdown this game</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <RoundResultChart data={props.data.rounds}></RoundResultChart>
+          <MoneyChart data={props.data}></MoneyChart>
         </ExpansionPanelDetails>
       </ExpansionPanel>
 
       <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
         <ExpansionPanelSummary aria-controls="panel2d-content" id="panel2d-header" expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Weapon Performance</Typography>
-          <Typography className={classes.secondaryHeading}>Find out your performance on weapons used this game</Typography>
+          <Typography className={classes.heading}>Round Types</Typography>
+          <Typography className={classes.secondaryHeading}>Find out your round buy types this game</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <WeaponChart data={props.data.weapons}></WeaponChart>
+          <RoundTypeChart data={props.data}></RoundTypeChart>
         </ExpansionPanelDetails>
       </ExpansionPanel>
 
       <ExpansionPanel square expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
         <ExpansionPanelSummary aria-controls="panel3d-content" id="panel3d-header" expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Key Performance Indicators</Typography>
-          <Typography className={classes.secondaryHeading}>Find out your average kills, assists, deaths and headshots</Typography>
+          <Typography className={classes.heading}>Average Economy Values</Typography>
+          <Typography className={classes.secondaryHeading}>Find out your average money earned, saved, and spent</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <PerformanceChart data={props.data.performance}></PerformanceChart>
+          <EconomyPerformanceChart data={props.data}></EconomyPerformanceChart>
         </ExpansionPanelDetails>
       </ExpansionPanel>
 
     </Container>
-  )
+  );
 }
 
-export default OverviewRoundPanel;
+function mapStateToProps(state) {
+  if (state) {
+    return {
+      data: state.rounds
+    }
+  }
+  return {};
+}
+
+export default connect(mapStateToProps)(Economy);

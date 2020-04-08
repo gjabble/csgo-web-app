@@ -709,6 +709,138 @@
       "accuracy": 15.789473684210526
     }
   },
+  "performance": {
+    "totalFired": 885,
+    "totalHits": 119,
+    "headshotHits": 15,
+    "totalDamage": 3994,
+    "averageDamage": 133.13333333333333,
+    "averageHeadshot": 0.5,
+    "averageKills": 1.2666666666666666,
+    "averageAssists": 0.3,
+    "averageDeaths": 0.7666666666666667,
+    "overallAccuracy": 13.446327683615818
+  },
+  "accuracy": {
+    "ak47": {
+      "head": 4,
+      "chest": 17,
+      "stomach": 20,
+      "leftarm": 0,
+      "rightarm": 2,
+      "leftleg": 2,
+      "rightleg": 2
+    },
+    "glock": {
+      "head": 1,
+      "chest": 3,
+      "stomach": 0,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 2
+    },
+    "mac10": {
+      "head": 2,
+      "chest": 3,
+      "stomach": 3,
+      "leftarm": 0,
+      "rightarm": 2,
+      "leftleg": 0,
+      "rightleg": 1
+    },
+    "hegrenade": {
+      "head": 0,
+      "chest": 0,
+      "stomach": 0,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 0,
+      "undefined": 3
+    },
+    "deagle": {
+      "head": 2,
+      "chest": 4,
+      "stomach": 0,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 0
+    },
+    "galilar": {
+      "head": 0,
+      "chest": 0,
+      "stomach": 1,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 1
+    },
+    "ssg08": {
+      "head": 1,
+      "chest": 2,
+      "stomach": 0,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 0
+    },
+    "hkp2000": {
+      "head": 2,
+      "chest": 2,
+      "stomach": 3,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 0
+    },
+    "m4a1": {
+      "head": 3,
+      "chest": 5,
+      "stomach": 5,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 2,
+      "rightleg": 1
+    },
+    "mp7": {
+      "head": 0,
+      "chest": 0,
+      "stomach": 2,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 0
+    },
+    "awp": {
+      "head": 0,
+      "chest": 4,
+      "stomach": 1,
+      "leftarm": 0,
+      "rightarm": 2,
+      "leftleg": 0,
+      "rightleg": 0
+    },
+    "mp9": {
+      "head": 0,
+      "chest": 0,
+      "stomach": 2,
+      "leftarm": 0,
+      "rightarm": 1,
+      "leftleg": 2,
+      "rightleg": 1
+    },
+    "p250": {
+      "head": 0,
+      "chest": 2,
+      "stomach": 0,
+      "leftarm": 0,
+      "rightarm": 0,
+      "leftleg": 0,
+      "rightleg": 1
+    }
+  },
   "map": "de_mirage",
   "gameLength": "54:06",
   "tScore": 15,

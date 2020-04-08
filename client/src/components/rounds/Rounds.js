@@ -89,11 +89,12 @@ const Rounds = (props) => {
 }
 
 function mapStateToProps(state) {
-  if (state.rounds && state.weapons) {
+  if (state.rounds && state.weapons && state.performance) {
     return {
       data: {
         rounds: state.rounds,
         weapons: state.weapons,
+        performance: state.performance
       }
     }
   }

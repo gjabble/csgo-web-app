@@ -6,13 +6,31 @@ const fs = require('fs');
 const cors = require('cors');
 const formidableMiddleware = require('express-formidable');
 const bodyParser = require('body-parser');
+const mongoose = require("mongoose");
+const passport = require("passport");
+const users = require("./routes/api/users");
 
 app.use(cors({
   origin: '*',
   optionsSuccessStatus: 200,
 }));
-app.use(formidableMiddleware());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+const db = require("./config/keys").mongoURI;
+
+mongoose
+  .connect(
+    db,
+    { useNewUrlParser: true }
+  )
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
+
+
+app.use(passport.initialize());
+require("./config/passport")(passport);
+app.use("/api/users", users);
+app.use(formidableMiddleware());
 
 app.post('/file', (req, res) => {
   fs.readFile(req.files.file.path, (err, buffer) => {
@@ -20,10 +38,10 @@ app.post('/file', (req, res) => {
       1: 'head',
       2: 'chest',
       3: 'stomach',
-      4: 'left_arm',
-      5: 'right_arm',
-      6: 'left_leg',
-      7: 'right_leg',
+      4: 'leftarm',
+      5: 'rightarm',
+      6: 'leftleg',
+      7: 'rightleg',
     }
     let reasons = {
       1: 'target_bombed', // t win
@@ -36,14 +54,16 @@ app.post('/file', (req, res) => {
     }
     const demo = new demofile.DemoFile();
     // const playerName = req.fields.playerName;
-    const playerName = 'iPlayToLose';
+    const playerName = 'Rainy';
 
     let overview = {
       scoreBoard: {
         players: []
       },
       rounds: [],
-      weapons: {}
+      weapons: {},
+      performance: {},
+      accuracy: {}
     }
 
 
@@ -78,8 +98,41 @@ app.post('/file', (req, res) => {
     demo.gameEvents.on('player_hurt', (e) => {
       const attacker = demo.entities.getByUserId(e.attacker);
       const attackerName = attacker ? attacker.name : "unnamed";
-
       if (attackerName === playerName) {
+        if (!overview.accuracy[e.weapon]) {
+          overview.accuracy[e.weapon] = {
+            head: 0,
+            chest: 0,
+            stomach: 0,
+            leftarm: 0,
+            rightarm: 0,
+            leftleg: 0,
+            rightleg: 0
+          };
+          overview.accuracy[e.weapon][hitgroups[e.hitgroup]] = 1;
+        } else {
+          let prev = overview.accuracy[e.weapon][hitgroups[e.hitgroup]];
+          overview.accuracy[e.weapon][hitgroups[e.hitgroup]] = prev + 1;
+        }
+
+
+
+        if (e.hitgroup == 1) {
+          if (!overview.performance.headshotHits) {
+            overview.performance.headshotHits = 1;
+          } else {
+            const prevVal = overview.performance.headshotHits;
+            overview.performance.headshotHits = prevVal + 1;
+          }
+        }
+
+        if (!overview.performance.totalHits) {
+          overview.performance.totalHits = 1
+        } else {
+          const prevVal = overview.performance.totalHits;
+          overview.performance.totalHits = prevVal + 1;
+        }
+
         if (!overview.weapons[e.weapon]) {
           overview.weapons[e.weapon] = {
             kills: 0,
@@ -108,6 +161,12 @@ app.post('/file', (req, res) => {
       const attackerName = attacker ? attacker.name : "unnamed";
       e.weapon = e.weapon.slice(7, e.weapon.length);
       if (attackerName === playerName) {
+        if (!overview.performance.totalFired) {
+          overview.performance.totalFired = 1;
+        } else {
+          const prevVal = overview.performance.totalFired;
+          overview.performance.totalFired = prevVal + 1;
+        }
         if (!overview.weapons[e.weapon]) {
           overview.weapons[e.weapon] = {
             kills: 0,
@@ -187,7 +246,7 @@ app.post('/file', (req, res) => {
       let winner = player.teamNumber === e.winner;
       let matchStats = player.matchStats[roundNumber - 1];
       overview.rounds.push({
-        'roundNumber': demo.gameRules.roundsPlayed,
+        'roundNumber': roundNumber,
         'winner': winner,
         'reason': reasons[e.reason],
         'amountSpent': player.cashSpendThisRound,
@@ -204,9 +263,6 @@ app.post('/file', (req, res) => {
       });
     });
 
-
-
-
     demo.on('end', () => {
       let seconds = demo.currentTime;
       const secondsToMinutes = Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
@@ -220,6 +276,16 @@ app.post('/file', (req, res) => {
       let winner = player == winningTeam ? true : false;
       overview.winner = winner;
       overview.playerTeam = player.teamNumber;
+      const totalDamage = overview.rounds.map(round => round.damage).reduce((acc, cv) => acc + cv);
+      const playerStats = overview.scoreBoard.players.find(player => player.name == playerName);
+      const numRounds = overview.rounds.length;
+      overview.performance.totalDamage = totalDamage;
+      overview.performance.averageDamage = totalDamage / numRounds;
+      overview.performance.averageHeadshot = overview.performance.headshotHits / numRounds;
+      overview.performance.averageKills = playerStats.kills / numRounds;
+      overview.performance.averageAssists = playerStats.assists / numRounds;
+      overview.performance.averageDeaths = playerStats.deaths / numRounds;
+      overview.performance.overallAccuracy = (overview.performance.totalHits / overview.performance.totalFired) * 100;
       console.log(JSON.stringify(overview));
       res.send(overview);
     });

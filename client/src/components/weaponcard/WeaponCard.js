@@ -8,12 +8,10 @@ import deagle from '../../icons/deagle.png';
 import Container from '@material-ui/core/Container';
 import * as name from '../../icons/index.js';
 
-console.log(name);
-
 const useStyles = makeStyles({
   root: {
-    maxWidth: 500,
-    maxHeight: 500,
+    maxWidth: 1000,
+    maxHeight: 1000,
   },
   columns: {
     columnCount: 2,
@@ -30,7 +28,6 @@ const getImageIcon = (weapon) => {
 }
 
 const WeaponChart = (props) => {
-  console.log(props.data);
   const classes = useStyles();
   const imageIcon = getImageIcon(props.data.weapon);
   return (

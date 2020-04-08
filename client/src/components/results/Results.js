@@ -9,6 +9,8 @@ import Box from '@material-ui/core/Box';
 import Scoreboard from '../scoreboard/Scoreboard';
 import { connect } from 'react-redux';
 import Rounds from '../rounds/Rounds';
+import Economy from '../economy/Economy';
+import Accuracy from "../accuracy/Accuracy";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -94,8 +96,12 @@ const Results = (props) => {
             <TabPanel value={value} index={1}>
               <Rounds></Rounds>
             </TabPanel>
-            <TabPanel value={value} index={2}>economy</TabPanel>
-            <TabPanel value={value} index={3}>accuracy</TabPanel>
+            <TabPanel value={value} index={2}>
+              <Economy></Economy>
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+              <Accuracy></Accuracy>
+            </TabPanel>
           </Container>
         </Container>
       </Paper>
