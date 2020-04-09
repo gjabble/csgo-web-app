@@ -8,8 +8,12 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withRouter } from 'react-router-dom';
+import axios from 'axios';
 
 function Copyright() {
   return (
@@ -58,6 +62,20 @@ class Register extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+      // TODO - show errors on UI
+      console.log(nextProps.errors);
+    }
+  }
+
+  onChange = e => {
+    this.setState({ [e.target.id]: e.target.value });
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
     const newUser = {
@@ -67,8 +85,16 @@ class Register extends React.Component {
       ign: this.state.ign,
       password1: this.state.password1,
       password2: this.state.password2,
-    }
-    console.log('register submitted with data', newUser);
+    };
+    axios
+      .post("/api/users/register", newUser)
+      .then(res => this.props.history.push("/login")) // re-direct to login on successful register
+      .catch(err =>
+        this.props.dispatch({
+          type: 'GET_ERRORS',
+          payload: err.response.data
+        })
+      );
   }
 
   render() {
@@ -87,22 +113,24 @@ class Register extends React.Component {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  onChange={this.onChange}
                   autoComplete="fname"
                   name="firstname"
                   variant="outlined"
                   required
                   fullWidth
-                  id="firstName"
+                  id="firstname"
                   label="First Name"
                   autoFocus
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  onChange={this.onChange}
                   variant="outlined"
                   required
                   fullWidth
-                  id="lastName"
+                  id="lastname"
                   label="Last Name"
                   name="lastname"
                   autoComplete="lname"
@@ -110,6 +138,7 @@ class Register extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  onChange={this.onChange}
                   variant="outlined"
                   required
                   fullWidth
@@ -121,6 +150,7 @@ class Register extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  onChange={this.onChange}
                   variant="outlined"
                   required
                   fullWidth
@@ -132,25 +162,27 @@ class Register extends React.Component {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  onChange={this.onChange}
                   variant="outlined"
                   required
                   fullWidth
                   name="password1"
                   label="Password"
                   type="password"
-                  id="password"
+                  id="password1"
                   autoComplete="current-password"
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  onChange={this.onChange}
                   variant="outlined"
                   required
                   fullWidth
                   name="password2"
                   label="Re enter password"
                   type="password"
-                  id="password"
+                  id="password2"
                   autoComplete="current-password"
                 />
               </Grid>
@@ -181,4 +213,14 @@ class Register extends React.Component {
   }
 }
 
-export default withStyles(styles)(Register);
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(Register)));

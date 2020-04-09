@@ -1,5 +1,5 @@
 import axios from "axios";
-import setAuthToken from "../utils/setAuthToken";
+import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 import {
   GET_ERRORS,
@@ -49,11 +49,7 @@ export const setCurrentUser = decoded => {
   };
 };
 // User loading
-export const setUserLoading = () => {
-  return {
-    type: USER_LOADING
-  };
-};
+
 // Log user out
 export const logoutUser = () => dispatch => {
   // Remove token from local storage

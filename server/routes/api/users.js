@@ -27,7 +27,7 @@ router.post("/register", (req, res) => {
         lastname: req.body.lastname,
         ign: req.body.ign,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password1
       });
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
@@ -75,7 +75,10 @@ router.post("/login", (req, res) => {
         // Create JWT Payload
         const payload = {
           id: user.id,
-          name: user.name
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          ign: user.ign
         };
         // Sign token
         jwt.sign(
@@ -85,6 +88,7 @@ router.post("/login", (req, res) => {
             expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {
+            console.log(token);
             res.json({
               success: true,
               token: "Bearer " + token
