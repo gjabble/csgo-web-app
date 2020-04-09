@@ -13,7 +13,6 @@ const User = require("../../models/User");
 // @access Public
 router.post("/register", (req, res) => {
   // Form validation
-  console.log(req.body);
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
   if (!isValid) {
@@ -24,7 +23,9 @@ router.post("/register", (req, res) => {
       return res.status(400).json({ email: "Email already exists" });
     } else {
       const newUser = new User({
-        name: req.body.name,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        ign: req.body.ign,
         email: req.body.email,
         password: req.body.password
       });
