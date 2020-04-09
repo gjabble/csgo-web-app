@@ -9,7 +9,6 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import showResults from '../../redux/actions';
 
 const useStyles = makeStyles(theme => ({
   heroContent: {
@@ -44,7 +43,10 @@ const FileUpload = ({ dispatch }) => {
       }
     }).then((response) => {
       document.querySelector('#spinner').style.display = 'none';
-      dispatch(showResults(response.data));
+      dispatch({
+        type: 'UPLOAD',
+        payload: response.data,
+      });
       history.push('/results');
     }).catch((err) => {
       console.log(err);

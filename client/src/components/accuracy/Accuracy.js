@@ -48,7 +48,7 @@ const Accuracy = (props) => {
 function mapStateToProps(state) {
   if (state) {
     return {
-      data: state.accuracy
+      data: state.results.accuracy
     }
   }
   return {};

@@ -114,7 +114,7 @@ function mapStateToProps(state) {
     return {};
   }
   return {
-    data: state
+    data: state.results
   }
 }
 

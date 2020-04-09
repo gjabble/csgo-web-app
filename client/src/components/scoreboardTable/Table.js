@@ -62,9 +62,9 @@ const ResultsTable = (props) => {
 }
 
 function mapStateToProps(state) {
-  if (state.scoreBoard) {
+  if (state) {
     return {
-      data: state.scoreBoard.players
+      data: state.results.scoreBoard.players
     }
   }
   return {};
