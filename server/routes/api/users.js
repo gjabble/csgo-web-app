@@ -9,6 +9,7 @@ const demofile = require('demofile');
 const fs = require('fs');
 const formidableMiddleware = require('express-formidable');
 const User = require("../../models/User");
+const { v4: uuidv4 } = require('uuid');
 
 router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -88,8 +89,43 @@ router.post("/login", (req, res) => {
   });
 });
 
+router.get('/replay', (req, res) => {
+  const replayid = req.query.replayid;
+  const token = req.headers.authorization.split(' ')[1];
+  const decoded = jwt.decode(token);
+  User.findById(decoded.id).then(user => {
+    if (user) {
+      const replay = user.replays.find((replay) => replay.id === replayid);
+      res.send(replay);
+    } else {
+      res.send({});
+    }
+  });
+});
+
 router.get('/uploads', (req, res) => {
-  res.json({ test: 'test' })
+  const token = req.headers.authorization.split(' ')[1];
+  const decoded = jwt.decode(token);
+  User.findById(decoded.id).then(user => {
+    if (user) {
+      const response = [];
+      for (const replay of user.replays) {
+        response.push({
+          id: replay.id,
+          map: replay.map,
+          gameLength: replay.gameLength,
+          tScore: replay.tScore,
+          ctScore: replay.ctScore,
+          winner: replay.winner,
+          playerTeam: replay.playerTeam,
+        });
+      }
+      console.log(response);
+      res.send(response);
+    } else {
+      res.send([]);
+    }
+  });
 });
 
 router.post('/upload', formidableMiddleware(), (req, res) => {
@@ -351,7 +387,8 @@ router.post('/upload', formidableMiddleware(), (req, res) => {
 
       User.findById(req.fields.userid).then(user => {
         if (user) {
-          user.replays = [...user.replays, [overview]];
+          overview.id = uuidv4();
+          user.replays.push(overview);
           user
             .save()
             .then(user => {

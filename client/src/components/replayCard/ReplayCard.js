@@ -7,6 +7,10 @@ import Container from '@material-ui/core/Container';
 import * as name from '../../icons/index.js';
 import nuke from '../../icons/nuke.png';
 import Button from '@material-ui/core/Button';
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
+import { useDispatch } from 'react-redux'
+
 
 const useStyles = makeStyles({
   content: {
@@ -25,25 +29,50 @@ const getImageIcon = (weapon) => {
 
 const ReplayCard = (props) => {
   const classes = useStyles();
+  const data = props.data;
+  const history = useHistory();
+  const dispatch = useDispatch();
+  let result = props.data.winner ? 'Victory' : 'Defeat';
+  if (data.tScore == data.ctScore) {
+    result = 'Draw';
+  }
+
+  const handleClick = (e) => {
+    const replayid = e.currentTarget.getAttribute('replayid');
+    axios.get("/api/users/replay", {
+      params: {
+        replayid: replayid
+      }
+    })
+      .then(result => {
+        console.log(result.data);
+        dispatch({
+          type: 'UPLOAD',
+          payload: result.data,
+        });
+        history.push('/results');
+      })
+      .catch(e => console.log(e))
+  }
+
   return (
     <Card>
       <CardContent className={classes.content}>
-        <img src={nuke}></img>
+        {/* <img src={nuke}></img> */}
         <Container align="center">
           <Typography>Counter Terrorist</Typography>
-          <Typography>15</Typography>
+          <Typography>{data.ctScore}</Typography>
         </Container>
         <Container align="center">
-          <Typography variant="h5">Victory/Loss</Typography>
-          <Typography>15:16</Typography>
-          <Typography>Map Name</Typography>
-          <Typography>53:14</Typography>
-          <Typography>Replay ID</Typography>
-          <Button color="primary">View Analysis</Button>
+          <Typography variant="h5">{result}</Typography>
+          <Typography>{data.ctScore}:{data.tScore}</Typography>
+          <Typography>{data.map}</Typography>
+          <Typography>{data.gameLength}</Typography>
+          <Button replayid={data.id} color="primary" onClick={handleClick}>View Analysis</Button>
         </Container>
         <Container align="center">
-          <Typography>Counter Terrorist</Typography>
-          <Typography>15</Typography>
+          <Typography>Terrorist</Typography>
+          <Typography>{data.tScore}</Typography>
         </Container>
       </CardContent>
     </Card>

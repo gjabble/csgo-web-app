@@ -1,13 +1,13 @@
 import { UPLOAD } from '../actions/types';
 const results = require('./test.json');
-const initialState = results;
+const initialState = {};
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case UPLOAD:
       return {
         ...state,
-        results: action.payload // game results from server
+        ...action.payload // game results from server
       };
     default:
       return state;
