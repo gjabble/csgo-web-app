@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
+import jwt_decode from 'jwt-decode';
 
 const useStyles = makeStyles(theme => ({
   heroContent: {
@@ -36,8 +37,10 @@ const FileUpload = ({ dispatch }) => {
     document.querySelector('#spinner').style.display = 'block';
     let formData = new FormData();
     formData.append('file', document.querySelector('#fileupload').files[0]);
+    const userid = jwt_decode(localStorage.getItem('jwtToken').split(' ')[1]).id;
+    formData.append('userid', userid);
     formData.append('playerName', 'Rainy');
-    axios.post('file', formData, {
+    axios.post('/api/users/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

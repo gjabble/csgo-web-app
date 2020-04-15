@@ -1,43 +1,82 @@
 import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { connect } from "react-redux";
+import { withRouter } from 'react-router-dom';
+import axios from 'axios';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import ReplayCard from '../replayCard/ReplayCard';
+
+import Button from '@material-ui/core/Button';
 
 const styles = {
   container: {
-    padding: '20px',
+    paddingTop: '64px'
+  },
+  card: {
+    minWidth: 500
+  },
+  content: {
+    display: 'flex',
+    height: 150
   }
 };
 
 class ProfileComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: 'test user',
-      uploadedReplays: [{
-        map: 'Dust 2',
-        result: 'Win',
-        uploadTime: Date.now(),
-      }]
-    }
+  constructor() {
+    super();
   }
 
+  // componentDidMount() {
+  //   axios.get("/api/users/uploads")
+  //     .then(result => console.log(result))
+  //     .catch(e => console.log(e))
+  // }
+
   render() {
+    const { classes } = this.props;
+    const user = this.props.auth.user;
     return (
-      <React.Fragment>
-        <CssBaseline />
-        <Container maxWidth="sm" component="main" className={this.props.classes.container}>
-          <Typography component="h1" variant="h2" align="center" color="textPrimary">
-            [User's] Profile
-        </Typography>
-          <div>
-            {JSON.stringify(this.state)}
-          </div>
-        </Container>
-      </React.Fragment>
+      <Container className={classes.container}>
+        <Card className={classes.card}>
+          <Typography align="center" variant="h2">Your Profile</Typography>
+          <CardContent>
+            <Typography variant="h4">Personal Information</Typography>
+            <br></br>
+            <Typography variant="h5" align="left" color="textSecondary" component="p">
+              First Name
+            </Typography>
+            <Typography variant="h5" align="left" component="p">
+              {user.firstname}
+            </Typography>
+            <br></br>
+            <Typography variant="h5" align="left" color="textSecondary" component="p">
+              Last Name
+            </Typography>
+            <Typography variant="h5" align="left" component="p">
+              {user.lastname}
+            </Typography>
+            <br></br>
+            <Typography variant="h5" align="left" color="textSecondary" component="p">
+              In Game Name
+            </Typography>
+            <Typography variant="h5" align="left" component="p">
+              {user.ign}
+            </Typography>
+            <br></br>
+            <Typography variant="h4">Replay History</Typography>
+            <br></br>
+            <ReplayCard></ReplayCard>
+          </CardContent>
+        </Card>
+      </Container>
     );
   }
 }
 
-export default withStyles(styles)(ProfileComponent);
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(ProfileComponent)));

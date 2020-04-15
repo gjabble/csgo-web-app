@@ -67,6 +67,11 @@ class ButtonAppBar extends React.Component {
               : <Button color="inherit" className={classes.menuButton} component={Link} to='/login'>Login</Button>
             }
 
+            {!this.props.auth.isAuthenticated
+              ? <Button color="inherit" className={classes.menuButton} component={Link} to='/register'>Register</Button>
+              : <div></div>
+            }
+
           </Toolbar>
         </AppBar>
       </div>

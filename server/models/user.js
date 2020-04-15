@@ -22,6 +22,10 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  replays: {
+    type: Array,
+    required: false
+  },
   date: {
     type: Date,
     default: Date.now

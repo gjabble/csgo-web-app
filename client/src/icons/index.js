@@ -42,3 +42,4 @@ export const tazer = require('./zeus.png');
 export const p250 = require('./p250.png');
 export const ssg08 = require('./ssg.png');
 export const smokegrenade = require('./smoke.png');
+export const nuke = require('./nuke.png');
