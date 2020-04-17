@@ -81,12 +81,14 @@ class ProfileComponent extends React.Component {
               <br></br>
               <Typography variant="h4">Replay History</Typography>
               <br></br>
+              {this.state.replays.length > 0 ? (this.state.replays.map(replay => (
+                <ReplayCard data={replay}></ReplayCard>
+              ))) : (
+                  <Typography variant="h5" align="left" color="textSecondary" component="p">
+                    No replays found,
+                    upload a replay <a href="/upload">here</a>
+                  </Typography>)}
             </Container>
-
-            {this.state.replays ? (this.state.replays.map(replay => (
-              <ReplayCard data={replay}></ReplayCard>
-            ))) : (<div></div>)}
-
           </CardContent>
         </Card>
       </Container>

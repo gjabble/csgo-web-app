@@ -37,9 +37,9 @@ const FileUpload = ({ dispatch }) => {
     document.querySelector('#spinner').style.display = 'block';
     let formData = new FormData();
     formData.append('file', document.querySelector('#fileupload').files[0]);
-    const userid = jwt_decode(localStorage.getItem('jwtToken').split(' ')[1]).id;
-    formData.append('userid', userid);
-    formData.append('playerName', 'Rainy');
+    const decoded = jwt_decode(localStorage.getItem('jwtToken'));
+    formData.append('userid', decoded.id);
+    formData.append('playerName', decoded.ign);
     axios.post('/api/users/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'

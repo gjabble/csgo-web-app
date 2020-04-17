@@ -45,10 +45,10 @@ class ButtonAppBar extends React.Component {
           <Toolbar>
             <Typography variant="h6" className={classes.title} color='inherit' component={Link} to='/'>CSGO Analyzer</Typography>
 
-            {this.props.auth.isAuthenticated
+            {/* {this.props.auth.isAuthenticated
               ? <Button color="inherit" className={classes.menuButton} component={Link} to='/results'>Results</Button>
               : <div></div>
-            }
+            } */}
             {this.props.auth.isAuthenticated
               ? <Button color="inherit" className={classes.menuButton} component={Link} to='/upload'>
                 <Icon className={classes.menuButton} color='inherit'>add_circle</Icon>
