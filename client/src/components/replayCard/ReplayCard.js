@@ -9,7 +9,7 @@ import nuke from '../../icons/nuke.png';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
 
 
 const useStyles = makeStyles({
@@ -45,7 +45,6 @@ const ReplayCard = (props) => {
       }
     })
       .then(result => {
-        console.log(result.data);
         dispatch({
           type: 'UPLOAD',
           payload: result.data,
@@ -56,7 +55,7 @@ const ReplayCard = (props) => {
   }
 
   return (
-    <Card>
+    <Card raised>
       <CardContent className={classes.content}>
         {/* <img src={nuke}></img> */}
         <Container align="center">

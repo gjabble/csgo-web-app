@@ -94,9 +94,7 @@ export default class RoundTypeChart extends React.Component {
         piechartdata: data
       },
       activeIndex: 0,
-
     }
-    console.log(this.state);
   }
 
   componentDidMount() {

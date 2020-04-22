@@ -120,7 +120,6 @@ router.get('/uploads', (req, res) => {
           playerTeam: replay.playerTeam,
         });
       }
-      console.log(response);
       res.send(response);
     } else {
       res.send([]);
@@ -130,7 +129,6 @@ router.get('/uploads', (req, res) => {
 
 router.post('/upload', formidableMiddleware(), (req, res) => {
   fs.readFile(req.files.file.path, (err, buffer) => {
-    console.log(req.fields);
     let hitgroups = {
       1: 'head',
       2: 'chest',
@@ -150,8 +148,8 @@ router.post('/upload', formidableMiddleware(), (req, res) => {
       18: 'ct_surrender' // t win
     }
     const demo = new demofile.DemoFile();
-    // const playerName = req.fields.playerName;
-    const playerName = 'Rainy';
+    const token = req.headers.authorization.split(' ')[1];
+    const playerName = jwt.decode(token).ign;
 
     let overview = {
       scoreBoard: {

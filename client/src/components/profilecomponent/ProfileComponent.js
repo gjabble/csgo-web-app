@@ -33,7 +33,6 @@ class ProfileComponent extends React.Component {
   componentDidMount() {
     axios.get("/api/users/uploads")
       .then(result => {
-        console.log(result);
         this.setState({ replays: result.data });
       })
       .catch(e => console.log(e))
@@ -79,7 +78,8 @@ class ProfileComponent extends React.Component {
                 {user.ign}
               </Typography>
               <br></br>
-              <Typography variant="h4">Replay History</Typography>
+              <Typography variant="h4" align="center">Replay History</Typography>
+              <br></br>
               <br></br>
               {this.state.replays.length > 0 ? (this.state.replays.map(replay => (
                 <ReplayCard data={replay}></ReplayCard>
