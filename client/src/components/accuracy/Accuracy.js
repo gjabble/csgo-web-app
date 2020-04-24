@@ -66,17 +66,6 @@ const Accuracy = (props) => {
 
         </ExpansionPanelDetails>
       </ExpansionPanel>
-
-      {/* <ExpansionPanel square expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-        <ExpansionPanelSummary aria-controls="panel2d-content" id="panel2d-header" expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Weapon Performance</Typography>
-          <Typography className={classes.secondaryHeading}>Find out your performance on weapons used this game</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <WeaponChart data={props.data.weapons}></WeaponChart>
-        </ExpansionPanelDetails>
-      </ExpansionPanel> */}
-
     </div>
   );
 }

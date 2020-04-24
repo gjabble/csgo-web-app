@@ -1,6 +1,7 @@
 import React from 'react';
 import ApplicationBar from '../../components/applicationbar/ApplicationBar';
 import ProfileComponent from '../../components/profilecomponent/ProfileComponent';
+import Footer from '../../components/footer/footer';
 
 
 class ProfileView extends React.Component {
@@ -9,6 +10,7 @@ class ProfileView extends React.Component {
       <div>
         <ApplicationBar></ApplicationBar>
         <ProfileComponent></ProfileComponent>
+        <Footer></Footer>
       </div>
     )
   }

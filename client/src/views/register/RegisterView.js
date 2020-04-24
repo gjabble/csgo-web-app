@@ -1,6 +1,7 @@
 import React from 'react';
 import ApplicationBar from '../../components/applicationbar/ApplicationBar';
 import RegisterComponent from '../../components/registercomponent/RegisterComponent';
+import Footer from '../../components/footer/footer';
 
 class RegisterView extends React.Component {
   render() {
@@ -8,6 +9,7 @@ class RegisterView extends React.Component {
       <div>
         <ApplicationBar></ApplicationBar>
         <RegisterComponent></RegisterComponent>
+        <Footer></Footer>
       </div>
     )
   }
