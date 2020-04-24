@@ -1,6 +1,6 @@
 import { UPLOAD } from '../actions/types';
 const results = require('./test.json');
-const initialState = {};
+const initialState = results;
 
 export default function (state = initialState, action) {
   switch (action.type) {
