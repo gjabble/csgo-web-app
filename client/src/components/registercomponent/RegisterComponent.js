@@ -18,7 +18,6 @@ import axios from 'axios';
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
       <Link color="inherit" href="#">
         CSGO Analyzer
       </Link>{' '}
@@ -58,7 +57,20 @@ class Register extends React.Component {
       ign: '',
       password1: '',
       password2: '',
-      errors: {}
+      errors: {
+        email: {
+          error: false,
+          message: ''
+        },
+        password1: {
+          error: false,
+          message: ''
+        },
+        password2: {
+          error: false,
+          message: ''
+        }
+      }
     }
   }
 
@@ -72,10 +84,21 @@ class Register extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
-        errors: nextProps.errors
+        errors: {
+          email: {
+            error: nextProps.errors.email ? true : false,
+            message: nextProps.errors.email
+          },
+          password1: {
+            error: nextProps.errors.password1 ? true : false,
+            message: nextProps.errors.password1
+          },
+          password2: {
+            error: nextProps.errors.password2 ? true : false,
+            message: nextProps.errors.password2
+          }
+        }
       });
-      // TODO - show errors on UI
-      console.log(nextProps.errors);
     }
   }
 
@@ -165,6 +188,8 @@ class Register extends React.Component {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  error={this.state.errors.email.error}
+                  helperText={this.state.errors.email.message}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -178,6 +203,8 @@ class Register extends React.Component {
                   type="password"
                   id="password1"
                   autoComplete="current-password"
+                  error={this.state.errors.password1.error}
+                  helperText={this.state.errors.password1.message}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -191,13 +218,15 @@ class Register extends React.Component {
                   type="password"
                   id="password2"
                   autoComplete="current-password"
+                  error={this.state.errors.password2.error}
+                  helperText={this.state.errors.password2.message}
                 />
               </Grid>
             </Grid>
             <Button
               type="submit"
               fullWidth
-              variant="contained"
+              variant="outlined"
               color="primary"
               className={classes.submit}
             >

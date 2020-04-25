@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
+const validateEditInput = require("../../validation/edit");
 const demofile = require('demofile');
 const fs = require('fs');
 const formidableMiddleware = require('express-formidable');
@@ -56,7 +57,7 @@ router.post("/login", (req, res) => {
   const password = req.body.password;
   User.findOne({ email }).then(user => {
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ email: "Email not found" });
     }
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
@@ -83,9 +84,36 @@ router.post("/login", (req, res) => {
       } else {
         return res
           .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
+          .json({ password: "Password incorrect" });
       }
     });
+  });
+});
+
+router.post('/edit', formidableMiddleware(), (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const decoded = jwt.decode(token);
+  const { errors, isValid } = validateEditInput(req.fields);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  User.findById(decoded.id).then(user => {
+    if (user) {
+      if (!(user.email === req.fields.email)) {
+        User.findOne({ email: req.fields.email }).then(u => {
+          if (u) {
+            res.status(400).json({ email: 'Another user is registered with this e-mail address' });
+          }
+        });
+      }
+      user.firstname = req.fields.firstname;
+      user.lastname = req.fields.lastname;
+      user.email = req.fields.email;
+      user.ign = req.fields.ign;
+      user.save().then(() => res.send()).catch((er) => res.send(er));
+    } else {
+      res.status(400);
+    }
   });
 });
 
@@ -112,6 +140,7 @@ router.get('/uploads', (req, res) => {
       for (const replay of user.replays) {
         response.push({
           id: replay.id,
+          datetime: replay.datetime,
           map: replay.map,
           gameLength: replay.gameLength,
           tScore: replay.tScore,
@@ -284,121 +313,138 @@ router.post('/upload', formidableMiddleware(), (req, res) => {
     });
 
     demo.gameEvents.on('round_end', (e) => {
-      let teamT = demo.teams[2];
-      let teamCT = demo.teams[3];
-      let roundNumber = demo.gameRules.roundsPlayed;
-      if (roundNumber > 30) return;
       let player = demo.players.find((p) => p.name === playerName);
+      if (player) {
+        let teamT = demo.teams[2];
+        let teamCT = demo.teams[3];
+        let roundNumber = demo.gameRules.roundsPlayed;
+        if (roundNumber > 30) return;
 
-      for (const p of teamT.members) {
-        if (p.isFakePlayer) {
-          continue;
-        }
-        let playerData = overview.scoreBoard.players.find(player => player.name === p.name);
-        let index = overview.scoreBoard.players.indexOf(playerData);
-        if (index === -1) {
-          overview.scoreBoard.players.push({
-            name: p.name,
-            kills: p.kills,
-            assists: p.assists,
-            deaths: p.deaths,
-            team: 't'
-          });
-        } else {
-          overview.scoreBoard.players[index] = {
-            name: p.name,
-            kills: p.kills,
-            assists: p.assists,
-            deaths: p.deaths,
-            team: 't'
+        for (const p of teamT.members) {
+          if (p.isFakePlayer) {
+            continue;
+          }
+          let playerData = overview.scoreBoard.players.find(player => player.name === p.name);
+          let index = overview.scoreBoard.players.indexOf(playerData);
+          if (index === -1) {
+            overview.scoreBoard.players.push({
+              name: p.name,
+              kills: p.kills,
+              assists: p.assists,
+              deaths: p.deaths,
+              team: 't'
+            });
+          } else {
+            overview.scoreBoard.players[index] = {
+              name: p.name,
+              kills: p.kills,
+              assists: p.assists,
+              deaths: p.deaths,
+              team: 't'
+            }
           }
         }
-      }
-      for (const p of teamCT.members) {
-        if (p.isFakePlayer) {
-          continue;
-        }
-        let playerData = overview.scoreBoard.players.find(player => player.name === p.name);
-        let index = overview.scoreBoard.players.indexOf(playerData);
-        if (index === -1) {
-          overview.scoreBoard.players.push({
-            name: p.name,
-            kills: p.kills,
-            assists: p.assists,
-            deaths: p.deaths,
-            team: 'ct'
-          });
-        } else {
-          overview.scoreBoard.players[index] = {
-            name: p.name,
-            kills: p.kills,
-            assists: p.assists,
-            deaths: p.deaths,
-            team: 'ct'
+        for (const p of teamCT.members) {
+          if (p.isFakePlayer) {
+            continue;
+          }
+          let playerData = overview.scoreBoard.players.find(player => player.name === p.name);
+          let index = overview.scoreBoard.players.indexOf(playerData);
+          if (index === -1) {
+            overview.scoreBoard.players.push({
+              name: p.name,
+              kills: p.kills,
+              assists: p.assists,
+              deaths: p.deaths,
+              team: 'ct'
+            });
+          } else {
+            overview.scoreBoard.players[index] = {
+              name: p.name,
+              kills: p.kills,
+              assists: p.assists,
+              deaths: p.deaths,
+              team: 'ct'
+            }
           }
         }
+        let winner = player.teamNumber === e.winner;
+        let matchStats = player.matchStats[roundNumber - 1];
+        overview.rounds.push({
+          'roundNumber': roundNumber,
+          'winner': winner,
+          'reason': reasons[e.reason],
+          'amountSpent': player.cashSpendThisRound,
+          'hasHelmet': player.hasHelmet,
+          'assists': matchStats.assists,
+          'damage': matchStats.damage,
+          'equipmentValue': matchStats.equipmentValue,
+          'headshotKills': matchStats.headShotKills,
+          'killReward': matchStats.killReward,
+          'kills': matchStats.kills,
+          'timeAlive': matchStats.liveTime,
+          'moneySaved': matchStats.moneySaved,
+          'objectives': matchStats.objective
+        });
+      } else {
+        overview.errors = {
+          playernotfound: true
+        }
       }
-      let winner = player.teamNumber === e.winner;
-      let matchStats = player.matchStats[roundNumber - 1];
-      overview.rounds.push({
-        'roundNumber': roundNumber,
-        'winner': winner,
-        'reason': reasons[e.reason],
-        'amountSpent': player.cashSpendThisRound,
-        'hasHelmet': player.hasHelmet,
-        'assists': matchStats.assists,
-        'damage': matchStats.damage,
-        'equipmentValue': matchStats.equipmentValue,
-        'headshotKills': matchStats.headShotKills,
-        'killReward': matchStats.killReward,
-        'kills': matchStats.kills,
-        'timeAlive': matchStats.liveTime,
-        'moneySaved': matchStats.moneySaved,
-        'objectives': matchStats.objective
-      });
+
     });
 
     demo.on('end', () => {
-      let seconds = demo.currentTime;
-      const secondsToMinutes = Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
-      overview.gameLength = secondsToMinutes;
-      let teamT = demo.teams[2];
-      overview.tScore = teamT.scoreFirstHalf + teamT.scoreSecondHalf;
-      let teamCT = demo.teams[3];
-      overview.ctScore = teamCT.scoreFirstHalf + teamCT.scoreSecondHalf;
-      let winningTeam = overview.ctScore > overview.tScore ? 3 : 2;
       let player = demo.players.find((p) => p.name == playerName);
-      let winner = player == winningTeam ? true : false;
-      overview.winner = winner;
-      overview.playerTeam = player.teamNumber;
-      const totalDamage = overview.rounds.map(round => round.damage).reduce((acc, cv) => acc + cv);
-      const playerStats = overview.scoreBoard.players.find(player => player.name == playerName);
-      const numRounds = overview.rounds.length;
-      overview.performance.totalDamage = totalDamage;
-      overview.performance.averageDamage = totalDamage / numRounds;
-      overview.performance.averageHeadshot = overview.performance.headshotHits / numRounds;
-      overview.performance.averageKills = playerStats.kills / numRounds;
-      overview.performance.averageAssists = playerStats.assists / numRounds;
-      overview.performance.averageDeaths = playerStats.deaths / numRounds;
-      overview.performance.overallAccuracy = (overview.performance.totalHits / overview.performance.totalFired) * 100;
-      // save to database 
+      if (player) {
+        let seconds = demo.currentTime;
+        const secondsToMinutes = Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
+        overview.gameLength = secondsToMinutes;
+        let teamT = demo.teams[2];
+        overview.tScore = teamT.scoreFirstHalf + teamT.scoreSecondHalf;
+        let teamCT = demo.teams[3];
+        overview.ctScore = teamCT.scoreFirstHalf + teamCT.scoreSecondHalf;
+        let winningTeam = overview.ctScore > overview.tScore ? 3 : 2;
 
-      User.findById(req.fields.userid).then(user => {
-        if (user) {
-          overview.id = uuidv4();
-          user.replays.push(overview);
-          user
-            .save()
-            .then(user => {
-              res.send(overview);
-            })
-            .catch(err => {
-              res.send(overview);
-            });
-        } else {
-          res.send(overview);
+        let winner = player == winningTeam ? true : false;
+        overview.winner = winner;
+        overview.playerTeam = player.teamNumber;
+        const totalDamage = overview.rounds.map(round => round.damage).reduce((acc, cv) => acc + cv);
+        const playerStats = overview.scoreBoard.players.find(player => player.name == playerName);
+        const numRounds = overview.rounds.length;
+        overview.performance.totalDamage = totalDamage;
+        overview.performance.averageDamage = totalDamage / numRounds;
+        overview.performance.averageHeadshot = overview.performance.headshotHits / numRounds;
+        overview.performance.averageKills = playerStats.kills / numRounds;
+        overview.performance.averageAssists = playerStats.assists / numRounds;
+        overview.performance.averageDeaths = playerStats.deaths / numRounds;
+        overview.performance.overallAccuracy = (overview.performance.totalHits / overview.performance.totalFired) * 100;
+        // save to database 
+
+        User.findById(req.fields.userid).then(user => {
+          if (user) {
+            overview.id = uuidv4();
+            overview.datetime = Date.now();
+            user.replays.push(overview);
+            user
+              .save()
+              .then(user => {
+                res.send(overview);
+              })
+              .catch(err => {
+                res.send(overview);
+              });
+          } else {
+            res.send(overview);
+          }
+        });
+      } else {
+        overview.errors = {
+          playernotfound: true
         }
-      });
+        res.status(400).json(overview.errors)
+      }
+
     });
 
     demo.parse(buffer);

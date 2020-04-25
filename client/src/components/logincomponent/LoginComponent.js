@@ -16,10 +16,10 @@ import { withRouter } from 'react-router-dom';
 import setAuthToken from '../../utils/setAuthToken';
 import jwt_decode from "jwt-decode";
 
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
       <Link color="inherit" href="#">
         CSGO Analyzer
       </Link>{' '}
@@ -56,6 +56,16 @@ class Login extends React.Component {
     this.state = {
       email: '',
       password: '',
+      errors: {
+        email: {
+          error: false,
+          message: ''
+        },
+        password: {
+          error: false,
+          message: ''
+        }
+      }
     }
   }
 
@@ -68,9 +78,17 @@ class Login extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
-        errors: nextProps.errors
+        errors: {
+          email: {
+            error: nextProps.errors.email ? true : false,
+            message: nextProps.errors.email
+          },
+          password: {
+            error: nextProps.errors.password ? true : false,
+            message: nextProps.errors.password
+          }
+        }
       });
-      // TODO - show errors on UI
       console.log(nextProps.errors);
     }
   }
@@ -86,17 +104,14 @@ class Login extends React.Component {
       .then(res => {
         const { token } = res.data;
         localStorage.setItem("jwtToken", token);
-        // Set token to Auth header
         setAuthToken(token);
-        // Decode token to get user data
         const decoded = jwt_decode(token);
-        // Set current user
         this.props.dispatch({
           type: 'LOGIN',
           payload: decoded
         });
         this.props.history.push("/profile");
-      }) // re-direct to login on successful register
+      })
       .catch(err => {
         this.props.dispatch({
           type: 'GET_ERRORS',
@@ -129,6 +144,8 @@ class Login extends React.Component {
               name="email"
               autoComplete="email"
               autoFocus
+              error={this.state.errors.email.error}
+              helperText={this.state.errors.email.message}
             />
             <TextField
               variant="outlined"
@@ -140,11 +157,13 @@ class Login extends React.Component {
               type="password"
               id="password-login"
               autoComplete="current-password"
+              error={this.state.errors.password.error}
+              helperText={this.state.errors.password.message}
             />
             <Button
               type="submit"
               fullWidth
-              variant="contained"
+              variant="outlined"
               color="primary"
               className={classes.submit}
             >

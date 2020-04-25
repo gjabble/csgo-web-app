@@ -31,3 +31,4 @@ require("./config/passport")(passport);
 app.use("/api/users", users);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+

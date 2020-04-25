@@ -34,12 +34,11 @@ const getImageIcon = (weapon) => {
 }
 
 const AccuracyCard = (props) => {
-  console.log(props.data);
   const classes = useStyles();
   const data = props.data;
   const imageIcon = getImageIcon(data.weapon);
   return (
-    <Card >
+    <Card variant="outlined">
       <CardContent className={classes.card}>
         <Container>
           <Typography variant="h5" component="h3">

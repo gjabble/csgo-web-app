@@ -43,20 +43,25 @@ const ReplayCard = (props) => {
       .catch(e => console.log(e))
   }
 
+  const getTime = (unix_timestamp) => {
+    var date = new Date(unix_timestamp);
+    return `${date.toDateString()} ${date.toLocaleTimeString()}`;
+  }
+
   return (
-    <Card raised>
+    <Card variant="outlined">
       <CardContent className={classes.content}>
-        {/* <img src={nuke}></img> */}
         <Container align="center">
           <Typography>Counter Terrorist</Typography>
           <Typography>{data.ctScore}</Typography>
         </Container>
         <Container align="center">
           <Typography variant="h5">{result}</Typography>
+          <Typography>{getTime(data.datetime)}</Typography>
           <Typography>{data.ctScore}:{data.tScore}</Typography>
           <Typography>{data.map}</Typography>
           <Typography>{data.gameLength}</Typography>
-          <Button replayid={data.id} color="primary" onClick={handleClick}>View Analysis</Button>
+          <Button variant="outlined" replayid={data.id} color="primary" onClick={handleClick}>View Analysis</Button>
         </Container>
         <Container align="center">
           <Typography>Terrorist</Typography>

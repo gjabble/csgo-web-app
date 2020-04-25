@@ -1,15 +1,12 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
-
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
       <Link color="inherit" href="/">
         CSGO Analyzer
       </Link>{' '}
@@ -20,26 +17,33 @@ function Copyright() {
 }
 
 const useStyles = makeStyles((theme) => ({
-  footer: {
-    borderTop: `1px solid ${theme.palette.divider}`,
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '80vh',
+  },
+  main: {
     marginTop: theme.spacing(8),
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: theme.spacing(6),
-      paddingBottom: theme.spacing(6),
-    },
+    marginBottom: theme.spacing(2),
+  },
+  footer: {
+    padding: theme.spacing(3, 2),
+    marginTop: 'auto',
+    backgroundColor:
+      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
   },
 }));
 
 const Footer = (props) => {
   const classes = useStyles();
   return (
-    <Container maxWidth="md" component="footer" className={classes.footer}>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
-    </Container>
+    <div className={classes.root}>
+      <footer className={classes.footer}>
+        <Container maxWidth="sm">
+          <Copyright />
+        </Container>
+      </footer>
+    </div>
   )
 }
 

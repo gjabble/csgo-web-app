@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
+    paddingTop: '20px'
   },
   topContainer: {
     display: 'flex',
