@@ -75,6 +75,7 @@ router.post("/login", (req, res) => {
             expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {
+            console.log('signed in');
             res.json({
               success: true,
               token: "Bearer " + token
@@ -82,9 +83,7 @@ router.post("/login", (req, res) => {
           }
         );
       } else {
-        return res
-          .status(400)
-          .json({ password: "Password incorrect" });
+        return res.status(400).json({ password: "Password incorrect" });
       }
     });
   });
