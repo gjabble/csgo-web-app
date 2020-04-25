@@ -89,7 +89,6 @@ class Login extends React.Component {
           }
         }
       });
-      console.log(nextProps.errors);
     }
   }
 

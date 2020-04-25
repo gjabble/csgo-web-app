@@ -62,7 +62,7 @@ const Rounds = (props) => {
   });
 
   return (
-    <Container className={classes.root}>
+    <Container fixed className={classes.root}>
       <Tabs
         value={value}
         onChange={handleChange}

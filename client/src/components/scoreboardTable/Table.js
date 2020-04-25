@@ -37,7 +37,7 @@ const ResultsTable = (props) => {
         <TableHead>
           <TableRow>
             <TableCell>name</TableCell>
-            <TableCell align="right">kills</TableCell>
+            <TableCell style={{ width: '100px' }} align="right">kills</TableCell>
             <TableCell align="right">assists</TableCell>
             <TableCell align="right">deaths</TableCell>
             <TableCell align="right">team</TableCell>

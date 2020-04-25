@@ -146,7 +146,7 @@ const FileUpload = ({ dispatch }) => {
           </Grid>
         </form>
         <Container align="center">
-          <Typography style={{ display: 'none', color: 'red' }} id="errormsg">No player with the IGN associated with your account was found in the uploaded replay. <br></br>Please update your profile or upload another replay.</Typography>
+          <Typography color="error" style={{ display: 'none' }} id="errormsg">No player with the IGN associated with your account was found in the uploaded replay. <br></br>Please update your profile or upload another replay.</Typography>
         </Container>
       </Container>
     </React.Fragment>
