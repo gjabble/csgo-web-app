@@ -9,7 +9,7 @@ const validateEditInput = require("../../validation/edit");
 const demofile = require('demofile');
 const fs = require('fs');
 const formidableMiddleware = require('express-formidable');
-const User = require("../../models/User");
+const User = require("../../models/user.js");
 const { v4: uuidv4 } = require('uuid');
 
 router.post("/register", (req, res) => {
