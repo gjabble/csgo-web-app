@@ -62,7 +62,7 @@ const Rounds = (props) => {
   });
 
   return (
-    <Container className={classes.root}>
+    <Container fixed className={classes.root}>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -89,12 +89,12 @@ const Rounds = (props) => {
 }
 
 function mapStateToProps(state) {
-  if (state.rounds && state.weapons && state.performance) {
+  if (state.results.rounds && state.results.weapons && state.results.performance) {
     return {
       data: {
-        rounds: state.rounds,
-        weapons: state.weapons,
-        performance: state.performance
+        rounds: state.results.rounds,
+        weapons: state.results.weapons,
+        performance: state.results.performance
       }
     }
   }

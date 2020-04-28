@@ -18,7 +18,6 @@ const EconomyPerformanceChart = (props) => {
   const averageSpend = props.data.map(r => r.amountSpent).reduce((acc, curr) => acc + curr) / props.data.length;
   const averageSaved = props.data.map(r => r.moneySaved).reduce((acc, curr) => acc + curr) / props.data.length;
   const averageEarned = props.data.map(r => r.killReward).reduce((acc, curr) => acc + curr) / props.data.length;
-  console.log(averageEarned, averageSaved, averageSpend);
   const data = [
     {
       stat: 'Average Spend',

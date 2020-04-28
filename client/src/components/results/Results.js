@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
+    paddingTop: '20px'
   },
   topContainer: {
     display: 'flex',
@@ -48,12 +49,29 @@ function TabPanel(props) {
 
 const Results = (props) => {
   let result = '';
+  let colour = '';
   if (props.data.winner) {
     result = 'Victory';
+    colour = 'green';
   } else if (props.data.tScore === props.data.ctScore) {
     result = 'Draw';
+    colour = 'black';
   } else {
-    result = 'Defeat'
+    result = 'Defeat';
+    colour = 'red';
+  }
+
+  let tcolour = '';
+  let ctcolour = '';
+  if (props.data.tScore > props.data.ctScore) {
+    tcolour = 'green';
+    ctcolour = 'red';
+  } else if (props.data.tScore < props.data.ctScore) {
+    tcolour = 'red';
+    ctcolour = 'green';
+  } else {
+    tcolour = 'black';
+    ctcolour = 'black';
   }
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -63,23 +81,22 @@ const Results = (props) => {
   }
 
   return (
-    <Container className={classes.root}>
+    <Container fixed className={classes.root}>
       <Paper elevation={3}>
         <Container>
           <Container className={classes.topContainer}>
             <Paper elevation={3}>
-              <Typography>Counter Terrorists</Typography>
-              {props.data.ctScore}
+              <Typography color="textSecondary" variant="h5">CT Score</Typography>
+              <Typography style={{ color: ctcolour }} variant="h5">{props.data.ctScore}</Typography>
             </Paper>
             <Paper elevation={3}>
-              <Typography>{result}</Typography>
-              <Typography>{props.data.playerName}</Typography>
-              <Typography>{props.data.map}</Typography>
-              <Typography>{props.data.gameLength}</Typography>
+              <Typography style={{ color: colour }} variant="h5">{result}</Typography>
+              <Typography color="textSecondary" variant="h6">{props.data.map}</Typography>
+              <Typography color="textSecondary" variant="h6">{props.data.gameLength}</Typography>
             </Paper>
             <Paper elevation={3}>
-              <Typography>Terrorists</Typography>
-              {props.data.tScore}
+              <Typography color="textSecondary" variant="h5">T Score</Typography>
+              <Typography style={{ color: tcolour }} variant="h5">{props.data.tScore}</Typography>
             </Paper>
           </Container>
 
@@ -114,7 +131,7 @@ function mapStateToProps(state) {
     return {};
   }
   return {
-    data: state
+    data: state.results
   }
 }
 

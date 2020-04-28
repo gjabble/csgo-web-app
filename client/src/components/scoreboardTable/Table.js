@@ -36,19 +36,17 @@ const ResultsTable = (props) => {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>name</TableCell>
-            <TableCell align="right">kills</TableCell>
-            <TableCell align="right">assists</TableCell>
-            <TableCell align="right">deaths</TableCell>
-            <TableCell align="right">team</TableCell>
+            <TableCell style={{ width: '200px' }}>Player</TableCell>
+            <TableCell align="right">Kills</TableCell>
+            <TableCell align="right">Assists</TableCell>
+            <TableCell align="right">Deaths</TableCell>
+            <TableCell align="right">Team</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows ? (rows.map(row => (
             <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
+              <TableCell style={{ width: '200px' }}>{row.name}</TableCell>
               <TableCell align="right">{row.kills}</TableCell>
               <TableCell align="right">{row.assists}</TableCell>
               <TableCell align="right">{row.deaths}</TableCell>
@@ -62,9 +60,9 @@ const ResultsTable = (props) => {
 }
 
 function mapStateToProps(state) {
-  if (state.scoreBoard) {
+  if (state) {
     return {
-      data: state.scoreBoard.players
+      data: state.results.scoreBoard.players
     }
   }
   return {};

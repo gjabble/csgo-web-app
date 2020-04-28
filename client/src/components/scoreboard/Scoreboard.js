@@ -18,10 +18,10 @@ export default function Scoreboard() {
   return (
     <Container className={classes.root}>
 
-      <Typography className={classes.type}>Terrorists</Typography>
+      <Typography variant="h5" className={classes.type}>Terrorists</Typography>
       <Table team="t"></Table>
-
-      <Typography className={classes.type}>Counter Terrorists</Typography>
+      <br></br>
+      <Typography variant="h5" className={classes.type}>Counter Terrorists</Typography>
       <Table team="ct"></Table>
 
     </Container>

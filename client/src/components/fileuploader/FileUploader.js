@@ -9,7 +9,9 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import showResults from '../../redux/actions';
+import jwt_decode from 'jwt-decode';
+import { green } from '@material-ui/core/colors';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   heroContent: {
@@ -26,31 +28,73 @@ const useStyles = makeStyles(theme => ({
   },
   spinner: {
     display: 'none',
-  }
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[700],
+    },
+  },
+  fabProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: -6,
+    left: -6,
+    zIndex: 1,
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -20,
+    marginLeft: -12,
+  },
 }));
 
 const FileUpload = ({ dispatch }) => {
   const classes = useStyles();
   let history = useHistory();
+  const [loading, setLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+  const buttonClassname = clsx({
+    [classes.buttonSuccess]: success,
+  });
   const handleFileUpload = (e) => {
     e.preventDefault();
-    document.querySelector('#spinner').style.display = 'block';
+    document.querySelector('#errormsg').style.display = 'none';
+    if (!loading) {
+      setSuccess(false);
+      setLoading(true);
+    }
     let formData = new FormData();
     formData.append('file', document.querySelector('#fileupload').files[0]);
-    formData.append('playerName', 'Rainy');
-    axios.post('file', formData, {
+    const decoded = jwt_decode(localStorage.getItem('jwtToken'));
+    formData.append('userid', decoded.id);
+    formData.append('playerName', decoded.ign);
+    axios.post('/api/users/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }).then((response) => {
-      document.querySelector('#spinner').style.display = 'none';
-      dispatch(showResults(response.data));
+      setSuccess(true);
+      setLoading(false);
+      dispatch({
+        type: 'UPLOAD',
+        payload: response.data,
+      });
       history.push('/results');
     }).catch((err) => {
-      console.log(err);
-      document.querySelector('#spinner').style.display = 'none';
+      setSuccess(false);
+      setLoading(false);
+      if (err.response.status === 400) {
+        if (err.response.data.playernotfound) {
+          document.querySelector('#errormsg').style.display = 'inline';
+        }
+      }
     });
   }
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -64,9 +108,13 @@ const FileUpload = ({ dispatch }) => {
         <form onSubmit={handleFileUpload}>
           <Grid align='center' className={classes.fileUpload}>
             <input
+              disabled={loading}
               onChange={function (e) {
-                document.querySelector('#filename').innerText = 'Chosen Replay: ' + e.target.files[0].name;
-                document.querySelector('#uploadFileButton').style.display = 'inline';
+                if (e.target.files[0]) {
+                  document.querySelector('#errormsg').style.display = 'none';
+                  document.querySelector('#filename').innerText = 'Chosen Replay: ' + e.target.files[0].name;
+                  document.querySelector('#uploadfilebutton').style.display = 'inline';
+                }
               }}
               accept='.dem'
               className={classes.input}
@@ -74,7 +122,7 @@ const FileUpload = ({ dispatch }) => {
               type="file"
             />
             <label htmlFor="fileupload">
-              <Button variant="contained" color="primary" component="span">
+              <Button disabled={loading} id="choosereplay" variant="outlined" color="primary" component="span">
                 Choose Replay
               </Button>
             </label>
@@ -82,12 +130,24 @@ const FileUpload = ({ dispatch }) => {
             <br></br>
             <Typography id='filename' align="center" color="textSecondary" component="p"></Typography>
             <br></br>
-            <CircularProgress id='spinner' className={classes.spinner}></CircularProgress>
-            <Button id="uploadFileButton" className={classes.uploadFileButton} variant="contained" color="primary" type='submit'>
+
+            <Button
+              style={{ display: 'none' }}
+              id="uploadfilebutton"
+              variant="outlined"
+              color="primary"
+              className={buttonClassname}
+              disabled={loading}
+              type="submit"
+            >
               Upload
-            </Button>
+                </Button>
+            {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
           </Grid>
         </form>
+        <Container align="center">
+          <Typography color="error" style={{ display: 'none' }} id="errormsg">No player with the IGN associated with your account was found in the uploaded replay. <br></br>Please update your profile or upload another replay.</Typography>
+        </Container>
       </Container>
     </React.Fragment>
   );

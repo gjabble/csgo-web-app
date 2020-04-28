@@ -1,14 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Icon from '@material-ui/core/Icon';
+import { connect } from "react-redux";
+import setAuthToken from '../../utils/setAuthToken';
 
-
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
@@ -19,30 +20,63 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     textDecoration: 'none',
   }
-}));
+});
 
-export default function ButtonAppBar() {
-  const classes = useStyles();
+class ButtonAppBar extends React.Component {
+  constructor() {
+    super();
+  }
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title} color='inherit' component={Link} to='/'>
-            CSGO Analyzer
-          </Typography>
+  logout = (e) => {
+    localStorage.removeItem("jwtToken");
+    setAuthToken(false);
+    this.props.dispatch({
+      type: 'LOGIN',
+      payload: {}
+    });
+    this.props.history.push('/login');
+  }
 
-          <Button color="inherit" className={classes.menuButton} component={Link} to='/results'>Results</Button>
+  render() {
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <AppBar position="static" color="transparent">
+          <Toolbar>
+            <Typography variant="h6" className={classes.title} color='inherit' component={Link} to='/'>CSGO Analyzer</Typography>
 
-          <Button color="inherit" className={classes.menuButton} component={Link} to='/upload'>
-            <Icon className={classes.menuButton} color='inherit'>add_circle</Icon>
-            <span>Upload</span>
-          </Button>
+            {this.props.auth.isAuthenticated
+              ? <Button color="inherit" className={classes.menuButton} component={Link} to='/upload'>
+                <Icon className={classes.menuButton} color='inherit'>add_circle</Icon>
+                <span>Upload</span>
+              </Button>
+              : <div></div>
+            }
 
-          <Button color="inherit" className={classes.menuButton} component={Link} to='/profile'>Profile</Button>
-          <Button color="inherit" className={classes.menuButton} component={Link} to='/login'>Login</Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+            {this.props.auth.isAuthenticated
+              ? <Button color="inherit" className={classes.menuButton} component={Link} to='/profile'>Profile</Button>
+              : <div></div>
+            }
+
+            {this.props.auth.isAuthenticated
+              ? <Button color="inherit" className={classes.menuButton} onClick={this.logout}>Logout</Button>
+              : <Button color="inherit" className={classes.menuButton} component={Link} to='/login'>Login</Button>
+            }
+
+            {!this.props.auth.isAuthenticated
+              ? <Button color="inherit" className={classes.menuButton} component={Link} to='/register'>Register</Button>
+              : <div></div>
+            }
+
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
 }
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(ButtonAppBar)));

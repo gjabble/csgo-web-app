@@ -69,7 +69,7 @@ const Economy = (props) => {
 function mapStateToProps(state) {
   if (state) {
     return {
-      data: state.rounds
+      data: state.results.rounds
     }
   }
   return {};
