@@ -198,6 +198,15 @@ router.post('/upload', formidableMiddleware(), (req, res) => {
       const attacker = demo.entities.getByUserId(e.attacker);
       const attackerName = attacker ? attacker.name : "unnamed";
       if (attackerName === playerName) {
+        if (e.weapon === 'hkp2000' && overview.weapons['usp_silencer']) {
+          e.weapon = 'usp_silencer';
+        }
+        if (e.weapon === 'inferno') {
+          e.weapon = 'molotov';
+        }
+        if (e.weapon === 'm4a1') {
+          e.weapon = 'm4a4';
+        }
         if (!overview.weapons[e.weapon]) {
           overview.weapons[e.weapon] = {
             kills: 1,
@@ -222,6 +231,15 @@ router.post('/upload', formidableMiddleware(), (req, res) => {
       const attacker = demo.entities.getByUserId(e.attacker);
       const attackerName = attacker ? attacker.name : "unnamed";
       if (attackerName === playerName) {
+        if (e.weapon === 'hkp2000' && overview.weapons['usp_silencer']) {
+          e.weapon = 'usp_silencer';
+        }
+        if (e.weapon === 'inferno') {
+          e.weapon = 'molotov';
+        }
+        if (e.weapon === 'm4a1') {
+          e.weapon = 'm4a4';
+        }
         if (!overview.accuracy[e.weapon]) {
           overview.accuracy[e.weapon] = {
             head: 0,
@@ -283,6 +301,15 @@ router.post('/upload', formidableMiddleware(), (req, res) => {
       const attacker = demo.entities.getByUserId(e.userid);
       const attackerName = attacker ? attacker.name : "unnamed";
       e.weapon = e.weapon.slice(7, e.weapon.length);
+      if (e.weapon === 'hkp2000' && overview.weapons['usp_silencer']) {
+        e.weapon = 'usp_silencer';
+      }
+      if (e.weapon === 'inferno') {
+        e.weapon = 'molotov';
+      }
+      if (e.weapon === 'm4a1') {
+        e.weapon = 'm4a4';
+      }
       if (attackerName === playerName) {
         if (!overview.performance.totalFired) {
           overview.performance.totalFired = 1;
@@ -405,7 +432,7 @@ router.post('/upload', formidableMiddleware(), (req, res) => {
         overview.ctScore = teamCT.scoreFirstHalf + teamCT.scoreSecondHalf;
         let winningTeam = overview.ctScore > overview.tScore ? 3 : 2;
 
-        let winner = player == winningTeam ? true : false;
+        let winner = player.teamNumber == winningTeam ? true : false;
         overview.winner = winner;
         overview.playerTeam = player.teamNumber;
         const totalDamage = overview.rounds.map(round => round.damage).reduce((acc, cv) => acc + cv);
