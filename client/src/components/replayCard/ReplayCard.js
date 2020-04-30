@@ -8,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles({
   content: {
@@ -17,6 +19,7 @@ const useStyles = makeStyles({
 });
 
 const ReplayCard = (props) => {
+  const handleDelete = props.handleDelete;
   const classes = useStyles();
   const data = props.data;
   const history = useHistory();
@@ -48,6 +51,7 @@ const ReplayCard = (props) => {
     return `${date.toDateString()} ${date.toLocaleTimeString()}`;
   }
 
+
   return (
     <Card variant="outlined">
       <CardContent className={classes.content}>
@@ -67,6 +71,9 @@ const ReplayCard = (props) => {
           <Typography>Terrorist</Typography>
           <Typography>{data.tScore}</Typography>
         </Container>
+        <IconButton aria-label="settings" style={{ padding: 0, height: '30px' }}>
+          <DeleteIcon replayid={data.id} onClick={handleDelete} />
+        </IconButton>
       </CardContent>
     </Card>
   );

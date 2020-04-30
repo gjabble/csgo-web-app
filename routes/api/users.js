@@ -130,6 +130,25 @@ router.get('/replay', (req, res) => {
   });
 });
 
+router.delete('/replay', (req, res) => {
+  const replayid = req.query.replayid;
+  const token = req.headers.authorization.split(' ')[1];
+  const decoded = jwt.decode(token);
+  User.findById(decoded.id).then(user => {
+    if (user) {
+      const updatedReplays = user.replays.filter((replay) => replay.id !== replayid);
+      user.replays = updatedReplays;
+      user.save().then(user => {
+        res.send(user.replays);
+      }).catch(e => {
+        res.status(500);
+      });
+    } else {
+      res.send({});
+    }
+  });
+})
+
 router.get('/uploads', (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const decoded = jwt.decode(token);

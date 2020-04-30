@@ -90,6 +90,21 @@ class ProfileComponent extends React.Component {
       .catch(e => console.log(e))
   }
 
+  handleDelete(e) {
+    const replayid = e.currentTarget.getAttribute('replayid');
+    axios.delete('/api/users/replay', {
+      params: {
+        replayid: replayid
+      }
+    }).then(result => {
+      const res = result.data.sort((a, b) => b.datetime - a.datetime);
+      this.setState({ replays: res, disabled: true });
+      console.log('deleted');
+    }).catch(e => {
+      console.log(e);
+    })
+  }
+
   handlesubmit = (e) => {
     e.preventDefault();
     const fd = new FormData(document.querySelector('#editform'));
@@ -225,7 +240,7 @@ class ProfileComponent extends React.Component {
               <ExpansionPanelDetails>
                 <Container>
                   {this.state.replays.length > 0 ? (this.state.replays.map(replay => (
-                    <ReplayCard data={replay}></ReplayCard>
+                    <ReplayCard data={replay} handleDelete={this.handleDelete.bind(this)}></ReplayCard>
                   ))) : (
                       <Typography variant="h5" align="left" color="textSecondary" component="p">
                         No replays found,
